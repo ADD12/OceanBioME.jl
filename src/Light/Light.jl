@@ -39,6 +39,7 @@ import Oceananigans.BoundaryConditions: _fill_top_halo!
 include("2band.jl")
 include("multi_band.jl")
 include("prescribed.jl")
+include("prescribed_attenuation.jl")
 
 include("compute_euphotic_depth.jl")
 
