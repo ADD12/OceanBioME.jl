@@ -12,10 +12,9 @@ Pᵢ(x,y,z) = 2.5 + z
 function test_two_band(grid, model_type, surface_PAR, discrete_form, parameters = nothing)
     biogeochemistry = NPZD(grid; 
                            light_attenuation = 
-                               TwoBandPhotosyntheticallyActiveRadiation(; grid,
-                                                                          surface_PAR, 
-                                                                          discrete_form,
-                                                                          parameters))
+                               TwoBandPhotosyntheticallyActiveRadiation(grid, surface_PAR;
+                                                                        discrete_form,
+                                                                        parameters))
 
     model = model_type(grid;
                        biogeochemistry,
@@ -81,13 +80,13 @@ function test_prescribed_attenuation(grid, model_type,
 end
 
 function test_multi_band(grid, model_type, surface_PAR, discrete_form, parameters = nothing)
-    light_attenuation = MultiBandPhotosyntheticallyActiveRadiation(; grid,
-                                                                     bands = ((1, 2), ),
-                                                                     base_bands = [1, 2],
-                                                                     base_water_attenuation_coefficient = [0.01, 0.01],
-                                                                     base_chlorophyll_exponent = [2, 2],
-                                                                     base_chlorophyll_attenuation_coefficient = [0.1, 0.1],
-                                                                     surface_PAR, discrete_form, parameters)
+    light_attenuation = MultiBandPhotosyntheticallyActiveRadiation(grid,surface_PAR;
+                                                                   bands = ((1, 2), ),
+                                                                   base_bands = [1, 2],
+                                                                   base_water_attenuation_coefficient = [0.01, 0.01],
+                                                                   base_chlorophyll_exponent = [2, 2],
+                                                                   base_chlorophyll_attenuation_coefficient = [0.1, 0.1],
+                                                                   discrete_form, parameters)
 
     biogeochemistry = NPZD(grid; light_attenuation)
 
@@ -102,15 +101,13 @@ function test_multi_band(grid, model_type, surface_PAR, discrete_form, parameter
 
     @test (@allowscalar all(interior(on_architecture(CPU(), light_attenuation.fields[1]), 1, 1, :) .≈ expected_PAR))
 
-    light_attenuation = MultiBandPhotosyntheticallyActiveRadiation(; grid,
-                                                                     bands = ((1, 2), (8, 9)),
-                                                                     base_bands = [1, 2, 8, 9],
-                                                                     base_water_attenuation_coefficient = [0.01, 0.01, 0.02, 0.02],
-                                                                     base_chlorophyll_exponent = [2, 2, 1.5, 1.5],
-                                                                     base_chlorophyll_attenuation_coefficient = [0.1, 0.1, 0.2, 0.2],
-                                                                     surface_PAR,
-                                                                     discrete_form,
-                                                                     parameters)
+    light_attenuation = MultiBandPhotosyntheticallyActiveRadiation(grid, surface_PAR;
+                                                                   bands = ((1, 2), (8, 9)),
+                                                                   base_bands = [1, 2, 8, 9],
+                                                                   base_water_attenuation_coefficient = [0.01, 0.01, 0.02, 0.02],
+                                                                   base_chlorophyll_exponent = [2, 2, 1.5, 1.5],
+                                                                   base_chlorophyll_attenuation_coefficient = [0.1, 0.1, 0.2, 0.2],
+                                                                   discrete_form, parameters)
 
     biogeochemistry = NPZD(grid; light_attenuation)
 
@@ -168,13 +165,13 @@ field_surface_PAR = Oceananigans.Fields.ConstantField(100)
     test_multi_band(grid, NonhydrostaticModel, continuous_surface_PAR, false, 100)
     test_prescribed_attenuation(grid, NonhydrostaticModel, continuous_surface_PAR, false, 0.1, false, 100)
 
-    test_prescribed_attenuation(grid, NonhydrostaticModel, continuous_surface_PAR, false, (z, t, a0) -> a0, false, 100, 0.1) # continuous attenuation with parameters
+    test_prescribed_attenuation(grid, NonhydrostaticModel, continuous_surface_PAR, false, (x, y, z, t, a0) -> a0, false, 100, 0.1) # continuous attenuation with parameters
     test_prescribed_attenuation(grid, NonhydrostaticModel, continuous_surface_PAR, false, (args...) -> 0.1, true, 100) # discrete attenuation
 end
 
 @testset "Float32 TwoBandPhotosyntheticallyActiveRadiation" begin
     grid = RectilinearGrid(architecture, Float32; size=(3, 3, 10), extent=(10, 10, 200))
-    par = TwoBandPhotosyntheticallyActiveRadiation(; grid)
+    par = TwoBandPhotosyntheticallyActiveRadiation(grid, 100)
 
     @test par.water_red_attenuation isa Float32
     @test par.water_blue_attenuation isa Float32
