@@ -104,12 +104,12 @@ end
                         ::ImplicitProductivity, ::NPD{FT}, 
                         fields, auxiliary_fields) where FT = zero(FT)
 
-@inline calcite_precipitation(i, j, k, grid, 
-                              bgc::NutrientsPlanktonDetritus{<:Any, <:ImplicitProductivity}, 
+@inline calcite_precipitation(i, j, k, grid,
+                              bgc::NutrientsPlanktonDetritus{<:Any, <:Any, <:ImplicitProductivity},
                               fields, auxiliary_fields) = (
-    solid_waste(i, j, k, grid, bgc.plankton, bgc, fields, auxiliary_fields) 
-  * carbon_ratio(i, j, k, grid, plankton, bgc, fields)
-  * calcite_rain_ratio(i, j, k, grid, plankton, bgc, fields)
+    solid_waste(i, j, k, grid, bgc.plankton, bgc, fields, auxiliary_fields)
+  * carbon_ratio(i, j, k, grid, bgc.plankton, bgc, fields)
+  * calcite_rain_ratio(i, j, k, grid, bgc.plankton, bgc, fields)
 )
 
 # admin
