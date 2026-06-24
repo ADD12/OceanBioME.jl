@@ -98,7 +98,7 @@ function manifest_multi_class_dissolved_particulate(dissolved_names, particulate
             @inline (bgc::NPD_DP)(i, j, k, grid, val_name::Val{$(QuoteNode(name))}, clock, fields, auxiliary_fields) = @inbounds (
                 dissolved_waste(i, j, k, grid, bgc.plankton, bgc, fields, auxiliary_fields) * bgc.detritus.dissolved_waste_partitioning[$n]
               + dissolved_remineralisation(i, j, k, grid, bgc.detritus, bgc, fields, auxiliary_fields) * bgc.detritus.dissolved_waste_partitioning[$n]
-              - grazing(i, j, k, grid, val_name, bgc.plankton, bgc, fields, auxiliary_fields) 
+              - grazing(i, j, k, grid, val_name, bgc.plankton, bgc, fields, auxiliary_fields)
               - bgc.detritus.dissolved_remineralisation_rate[$n] * fields[$(QuoteNode(name))][i, j, k]
             )
         end
@@ -108,73 +108,59 @@ function manifest_multi_class_dissolved_particulate(dissolved_names, particulate
         @eval begin
             @inline (bgc::NPD_DP)(i, j, k, grid, val_name::Val{$(QuoteNode(name))}, clock, fields, auxiliary_fields) = @inbounds (
                 solid_waste(i, j, k, grid, bgc.plankton, bgc, fields, auxiliary_fields) * bgc.detritus.particulate_waste_partitioning[$m]
-              - grazing(i, j, k, grid, val_name, bgc.plankton, bgc, fields, auxiliary_fields) 
+              - grazing(i, j, k, grid, val_name, bgc.plankton, bgc, fields, auxiliary_fields)
               - bgc.detritus.particulate_remineralisation_rate[$m] * fields[$(QuoteNode(name))][i, j, k]
             )
 
-            @inline biogeochemical_drift_velocity(bgc::NPD_DP, ::Val{$(QuoteNode(name))}) = 
+            @inline biogeochemical_drift_velocity(bgc::NPD_DP, ::Val{$(QuoteNode(name))}) =
                 bgc.detritus.sinking_velocities[$m]
         end
     end
+end
 
-    N = length(dissolved_names)
-    M = length(particulate_names)
-
-    ex_dissolved_remineralisation = quote
-        total = zero(FT)
+@generated function dissolved_remineralisation(i, j, k, grid, detritus::DissolvedParticulate{N, M, DN, PN}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where {N, M, DN, PN, FT}
+    combined = Expr(:block)
+    push!(combined.args, :(total = zero($FT)))
+    for (m, name) in enumerate(PN)
+        push!(combined.args, :(total += fields[$(QuoteNode(name))][i, j, k] *
+                        detritus.particulate_remineralisation_rate[$m] *
+                        detritus.dissolved_fraction_of_remineralisation[$m]))
     end
-
-    ex_inorganic_remineralisation = quote
-        total = zero(FT)
+    for (n, name) in enumerate(DN)
+        push!(combined.args, :(total += fields[$(QuoteNode(name))][i, j, k] *
+                        detritus.dissolved_remineralisation_rate[$n]))
     end
+    push!(combined.args, :(return total))
+    return combined
+end
 
-    ex_calcite_remineralisation = quote
-        total = zero(FT)
+@generated function inorganic_waste(i, j, k, grid, detritus::DissolvedParticulate{N, M, DN, PN}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where {N, M, DN, PN, FT}
+    combined = Expr(:block)
+    push!(combined.args, :(total = zero($FT)))
+    for (m, name) in enumerate(PN)
+        push!(combined.args, :(total += fields[$(QuoteNode(name))][i, j, k] *
+                        detritus.particulate_remineralisation_rate[$m] *
+                        (one($FT) - detritus.dissolved_fraction_of_remineralisation[$m])))
     end
-
-    for (m, name) in enumerate(particulate_names)
-        ex = :(total += fields[$(QuoteNode(name))][i, j, k] * 
-                        detritus.particulate_remineralisation_rate[$m] * 
-                        detritus.dissolved_fraction_of_remineralisation[$m])
-        push!(ex_dissolved_remineralisation.args, ex)
-
-        ex = :(total += fields[$(QuoteNode(name))][i, j, k] * 
-                        detritus.particulate_remineralisation_rate[$m] * 
-                        (one(FT) - detritus.dissolved_fraction_of_remineralisation[$m]))
-        push!(ex_inorganic_remineralisation.args, ex)
-
-        ex = :(total += fields[$(QuoteNode(name))][i, j, k] * 
-                        detritus.particulate_remineralisation_rate[$m])
-        push!(ex_calcite_remineralisation.args, ex)
+    for (n, name) in enumerate(DN)
+        push!(combined.args, :(total += fields[$(QuoteNode(name))][i, j, k] *
+                        detritus.dissolved_remineralisation_rate[$n]))
     end
+    push!(combined.args, :(return total))
+    return combined
+end
 
-    for (n, name) in enumerate(dissolved_names)
-        ex = :(total += fields[$(QuoteNode(name))][i, j, k] * 
-                        detritus.dissolved_remineralisation_rate[$n])
-        push!(ex_inorganic_remineralisation.args, ex)
+@generated function calcite_dissolution(i, j, k, grid, detritus::DissolvedParticulate{N, M, DN, PN}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where {N, M, DN, PN, FT}
+    combined = Expr(:block)
+    push!(combined.args, :(total = zero($FT)))
+    for (m, name) in enumerate(PN)
+        push!(combined.args, :(total += fields[$(QuoteNode(name))][i, j, k] *
+                        detritus.particulate_remineralisation_rate[$m]))
     end
-
-    @eval begin
-        @inline function dissolved_remineralisation(i, j, k, grid, detritus::DissolvedParticulate{$N, $M}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where FT
-            $ex_dissolved_remineralisation
-
-            return total
-        end
-
-        @inline function inorganic_waste(i, j, k, grid, detritus::DissolvedParticulate{$N, $M}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where FT
-            $ex_inorganic_remineralisation
-
-            return total
-        end
-
-        @inline function calcite_dissolution(i, j, k, grid, detritus::DissolvedParticulate{$N, $M}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where FT
-            $ex_calcite_remineralisation
-
-            total += dissolved_waste(i, j, k, grid, bgc.plankton, bgc, fields, auxiliary_fields)
-
-            return total * carbon_ratio(i, j, k, grid, bgc.plankton, bgc, fields) * calcite_rain_ratio(i, j, k, grid, bgc.plankton, bgc, fields)
-        end
-    end
+    push!(combined.args, :(total += dissolved_waste(i, j, k, grid, bgc.plankton, bgc, fields, auxiliary_fields)))
+    push!(combined.args, :(return total * carbon_ratio(i, j, k, grid, bgc.plankton, bgc, fields) *
+                                         calcite_rain_ratio(i, j, k, grid, bgc.plankton, bgc, fields)))
+    return combined
 end
 
 # admin
