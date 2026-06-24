@@ -127,7 +127,7 @@ function TwoBandPhotosyntheticallyActiveRadiation(; grid::AbstractGrid{FT},
 
     field = CenterField(grid; boundary_conditions =
                             regularize_field_boundary_conditions(
-                                FieldBoundaryConditions(top = ValueBoundaryCondition(surface_PAR)), grid, :PAR))
+                                FieldBoundaryConditions(top = ValueBoundaryCondition(surface_PAR; parameters, discrete_form)), grid, :PAR))
 
     # wrap surface_PAR to make it work with the `getbc` interface
     surface_PAR = materialize_condition(surface_PAR, parameters, discrete_form, ()) 

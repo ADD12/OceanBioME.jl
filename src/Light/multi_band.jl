@@ -108,7 +108,7 @@ function MultiBandPhotosyntheticallyActiveRadiation(; grid::AbstractGrid{FT},
     n_fields = length(field_names)
 
     surface_boundary_conditions = 
-        ntuple(n-> ValueBoundaryCondition(ScaledSurfaceFunction(surface_PAR, surface_PAR_division[n])), Val(n_fields))
+        ntuple(n-> ValueBoundaryCondition(ScaledSurfaceFunction(surface_PAR, surface_PAR_division[n]); parameters, discrete_form), Val(n_fields))
 
     field_boundary_conditions =
         ntuple(n -> regularize_field_boundary_conditions(FieldBoundaryConditions(top = surface_boundary_conditions[n]),
