@@ -42,3 +42,23 @@ where the ratio is constant and found in [Parameters](@ref parameters). The red 
 | ``e_b``          | `chlorophyll_blue_exponent`       | -                                 |
 | ``r_\text{pig}`` | `pigment_ratio`                   | -                                 |
 | ``R_{Chl:P}``    | `phytoplankton_chlorophyll_ratio` | mg Chl / mmol N                   |
+
+## Prescribed attenuation model
+
+`PrescribedAttenuationPAR` is a simpler model that integrates a prescribed attenuation coefficient downward from the surface, rather than computing attenuation from the chlorophyll concentration. At depth ``z`` the PAR is:
+
+```math
+PAR(z) = PAR_0 \exp\!\left(-\int_0^z K\, dz'\right),
+```
+
+where ``K`` is the attenuation coefficient (units: 1/m). By default ``K`` is a constant, but it may also be a function of position and time.
+
+This model is used by default in `ImplicitBiology` and is useful when no chlorophyll-based feedback on light is desired. It is set up as:
+
+```julia
+using OceanBioME
+
+light_attenuation = PrescribedAttenuationPAR(grid, surface_PAR; attenuation = 0.1)
+```
+
+where `surface_PAR` may be a constant or a function `f(x, y, t)`, and `attenuation` may be a constant or a function `f(x, y, z, t)`.
