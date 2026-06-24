@@ -2,10 +2,14 @@ include("dependencies_for_runtests.jl")
 
 using CUDA: @allowscalar
 
-using OceanBioME: TwoBandPhotosyntheticallyActiveRadiation, LOBSTER, NPZD
+using OceanBioME: TwoBandPhotosyntheticallyActiveRadiation, 
+                  PrescribedAttenuationPAR, 
+                  LOBSTER, NPZD, ImplicitBiology
 
 using Oceananigans.Architectures: on_architecture
-using Oceananigans.Biogeochemistry: update_biogeochemical_state!, required_biogeochemical_tracers, biogeochemical_auxiliary_fields
+using Oceananigans.Biogeochemistry: update_biogeochemical_state!, 
+                                    required_biogeochemical_tracers, 
+                                    biogeochemical_auxiliary_fields
 
 Pᵢ(x,y,z) = 2.5 + z
 
