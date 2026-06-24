@@ -125,9 +125,11 @@ function TwoBandPhotosyntheticallyActiveRadiation(; grid::AbstractGrid{FT},
     pigment_ratio = convert(FT, pigment_ratio)
     phytoplankton_chlorophyll_ratio = convert(FT, phytoplankton_chlorophyll_ratio)
 
+    boundary_condition_kwargs = surface_PAR isa Function ? (; parameters, discrete_form) : NamedTuple()
+
     field = CenterField(grid; boundary_conditions =
                             regularize_field_boundary_conditions(
-                                FieldBoundaryConditions(top = ValueBoundaryCondition(surface_PAR; parameters, discrete_form)), grid, :PAR))
+                                FieldBoundaryConditions(top = ValueBoundaryCondition(surface_PAR; boundary_condition_kwargs...)), grid, :PAR))
 
     # wrap surface_PAR to make it work with the `getbc` interface
     surface_PAR = materialize_condition(surface_PAR, parameters, discrete_form, ()) 

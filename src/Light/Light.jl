@@ -5,7 +5,8 @@ module Light
 
 export TwoBandPhotosyntheticallyActiveRadiation, 
        PrescribedPhotosyntheticallyActiveRadiation, 
-       MultiBandPhotosyntheticallyActiveRadiation
+       MultiBandPhotosyntheticallyActiveRadiation,
+       PrescribedAttenuationPAR
 
 using Adapt
 
