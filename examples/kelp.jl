@@ -69,7 +69,7 @@ set!(particles, A = 10, N = 0.01, C = 0.1, z = z₀, x = Lx / 2, y = Ly / 2)
 # ## Setup BGC model
 biogeochemistry = LOBSTER(grid;
                           surface_PAR = PAR⁰,
-                          carbonate_system = CarbonateSystem(),
+                          inorganic_carbon = CarbonateSystem(),
                           detritus = VariableRedfieldDetritus(),
                           oxygen = Oxygen(),
                           scale_negatives = true,

@@ -81,7 +81,7 @@ clock = Clock(; time = 0.0)
 
 biogeochemistry = LOBSTER(grid;
                           surface_PAR = surface_PAR,
-                          carbonate_system = CarbonateSystem(),
+                          inorganic_carbon = CarbonateSystem(),
                           scale_negatives = true)
 
 CO₂_flux = CarbonDioxideGasExchangeBoundaryCondition()
