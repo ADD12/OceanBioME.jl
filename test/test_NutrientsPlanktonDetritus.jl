@@ -76,7 +76,7 @@ oxygen_options = (nothing, Oxygen())
 
 @testset "Elemental conservations" begin 
     # maybe this is pointless but would like to keep Abiotic working for testing
-    # (aboitic is going to result in everything being reminerslised since theres no path to make detritus)
+    # (abiotic is going to result in everything being remineralised since theres no path to make detritus)
     for nutrients in nutrients_options[end-3:end], # empty slot, nitrate/ammonia, and N
         detritus in detritus_options,
         inorganic_carbon in inorganic_carbon_options,

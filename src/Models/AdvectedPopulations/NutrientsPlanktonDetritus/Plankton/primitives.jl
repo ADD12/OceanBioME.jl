@@ -2,9 +2,9 @@
 
 abstract type AbstractPlankton{LN} end
 
-# growth limitation - to use these primatives plankton be AbstractPlankton with LN = limiting nutrients
+# growth limitation - to use these primitives plankton be AbstractPlankton with LN = limiting nutrients
 # a tuple of limiting nutrients
-# and `nutrient_half_saturaitons(plankton, symbol)`
+# and `nutrient_half_saturations(plankton, symbol)`
 @inline nutrient_limitation(i, j, k, grid, nutrients, args...) = 
     min(nitrogen_limitation(i, j, k, grid, nutrients.nitrogen, args...),
         phosphate_limitation(i, j, k, grid, nutrients.phosphate, args...),
