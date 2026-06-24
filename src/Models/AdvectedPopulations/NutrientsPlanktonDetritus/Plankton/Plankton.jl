@@ -81,7 +81,7 @@ import ..NutrientsPlanktonDetritusModels.DetritusModels:
 chlorophyll(bgc::NutrientsPlanktonDetritus, model) =
     chlorophyll(bgc.plankton, model)
 
-include("primatives.jl")
+include("primitives.jl")
 include("abiotic.jl")
 include("implicit.jl")
 include("phyto_zoo.jl")

@@ -53,7 +53,7 @@ required_biogeochemical_auxiliary_fields(::Oxygen) = tuple()
 
 const OxygenNPD{FT, NUT} = NutrientsPlanktonDetritus{FT, <:Any, <:Any, <:Any, <:Any, <:Oxygen}
 
-# since we're assuming that nitrogen is nitrate (maybe erroniosuly), then it has to be denitrified before production/after remin
+# since we're assuming that nitrogen is nitrate (maybe erroneously), then it has to be denitrified before production/after remin
 @inline function (bgc::OxygenNPD)(i, j, k, grid, ::Val{:O₂}, clock, fields, auxiliary_fields)
     rP = bgc.oxygen.production_oxygen_carbon_ratio
     rN = bgc.oxygen.nitrification_oxygen_carbon_ratio
@@ -71,7 +71,7 @@ end
     rP = bgc.oxygen.production_oxygen_carbon_ratio
     rN = bgc.oxygen.nitrification_oxygen_carbon_ratio
 
-    # PP from NO₃ - nitrifcation etc.
+    # PP from NO₃ - nitrification etc.
     net_nitrate_production = bgc(i, j, k, grid, Val(:NO₃), clock, fields, auxiliary_fields)
 
     return (

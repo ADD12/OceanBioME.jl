@@ -28,7 +28,7 @@ import Oceananigans.Biogeochemistry:
 # one way coupled to the rest of the system, kind of).
 
 # We (some what arbitarily) make the abstract flow between these groups be:
-# Nutrients -> Plankton: `nutrient_uptake` with `nutrient_limitaiton` effecting the plankton
+# Nutrients -> Plankton: `nutrient_uptake` with `nutrient_limitation` effecting the plankton
 # Plankton -> Nutrients: `inorganic_waste` or `inorganic_X_waste`
 # Plankton -> Detritus: `solid_waste` and `dissolved_waste` or ...`_X_waste`
 # Detritus -> Plankton: `grazing` which can limit plankton

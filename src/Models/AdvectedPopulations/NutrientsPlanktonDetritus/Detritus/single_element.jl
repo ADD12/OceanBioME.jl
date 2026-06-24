@@ -226,7 +226,7 @@ function Base.show(io::IO, dp::DissolvedParticulate{N, M, ND, NP}) where {N, M, 
     msg *= "└── Particle sinking speeds\n"
 
     for m in 1:M-1
-        msg *= "  ├── $(ND[m]) : " * summary(dp.sinking_velocities[m].w) * "\n"
+        msg *= "  ├── $(NP[m]) : " * summary(dp.sinking_velocities[m].w) * "\n"
     end
 
     msg *= "  └── $(NP[end]) : " * summary(dp.sinking_velocities[end].w)
