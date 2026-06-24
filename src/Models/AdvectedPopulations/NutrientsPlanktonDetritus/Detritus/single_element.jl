@@ -126,10 +126,6 @@ end
                         detritus.particulate_remineralisation_rate[$m] *
                         detritus.dissolved_fraction_of_remineralisation[$m]))
     end
-    for (n, name) in enumerate(DN)
-        push!(combined.args, :(total += fields[$(QuoteNode(name))][i, j, k] *
-                        detritus.dissolved_remineralisation_rate[$n]))
-    end
     push!(combined.args, :(return total))
     return combined
 end
