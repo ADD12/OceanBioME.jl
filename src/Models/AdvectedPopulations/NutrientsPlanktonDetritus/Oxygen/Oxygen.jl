@@ -17,7 +17,6 @@ using ..NutrientsPlanktonDetritusModels.InorganicCarbonModels:
     primary_production,
     inorganic_carbon_waste
 
-using ..NutrientsPlanktonDetritusModels: inorganic_waste
 using ..NutrientsPlanktonDetritusModels.DetritusModels: CarbonNitrogenDissolvedParticulate
 
 import Base: summary, show
