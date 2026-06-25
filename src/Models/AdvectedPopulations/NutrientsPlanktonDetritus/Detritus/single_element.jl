@@ -89,9 +89,15 @@ default_sinking_speeds(::Symbol, FT=Float64) = convert(FT, 10/day)
 default_partitioning(names, FT=Float64) = tuple(repeat([convert(FT, 1/length(names))], length(names))...)
 default_partitioning(::Symbol, FT=Float64) = one(FT)
 
+const _manifested_dissolved_particulate = Set{Tuple}()
+
 function manifest_multi_class_dissolved_particulate(dissolved_names, particulate_names)
     dissolved_names = possibly_tuple_or_symbol(dissolved_names)
     particulate_names = possibly_tuple_or_symbol(particulate_names)
+
+    key = (dissolved_names, particulate_names)
+    key in _manifested_dissolved_particulate && return nothing
+    push!(_manifested_dissolved_particulate, key)
 
     for (n, name) in enumerate(dissolved_names)
         @eval begin
@@ -116,6 +122,8 @@ function manifest_multi_class_dissolved_particulate(dissolved_names, particulate
                 bgc.detritus.sinking_velocities[$m]
         end
     end
+
+    return nothing
 end
 
 @generated function dissolved_remineralisation(i, j, k, grid, detritus::DissolvedParticulate{N, M, DN, PN}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where {N, M, DN, PN, FT}
