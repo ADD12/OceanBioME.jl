@@ -124,7 +124,7 @@ carbon_export = zeros(length(times))
 
 using Oceananigans.Biogeochemistry: biogeochemical_drift_velocity
 
-R_CN = OceanBioME.Models.NutrientsPlanktonDetritus.carbon_ratio(model.biogeochemistry.underlying_biogeochemistry)
+R_CN = OceanBioME.Models.NutrientsPlanktonDetritusModels.carbon_ratio(model.biogeochemistry.underlying_biogeochemistry)
 
 for (n, t) in enumerate(times)
     clock.time = t
