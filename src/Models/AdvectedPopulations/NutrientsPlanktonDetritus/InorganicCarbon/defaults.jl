@@ -1,13 +1,3 @@
-@inline inorganic_carbon_waste(i, j, k, grid, plankton_or_detritus, bgc,
-                               fields, auxiliary_fields) =
-    carbon_ratio(i, j, k, grid, bgc.plankton, bgc, fields) * 
-    inorganic_waste(i, j, k, grid, plankton_or_detritus, bgc, fields, auxiliary_fields)
-
-@inline dissolved_carbon_waste(i, j, k, grid, plankton_or_detritus, bgc, 
-                               fields, auxiliary_fields) =
-    carbon_ratio(i, j, k, grid, bgc.plankton, bgc, fields) * 
-    dissolved_waste(i, j, k, grid, plankton_or_detritus, bgc, fields, auxiliary_fields)
-
 @inline primary_production(i, j, k, grid, plankton, bgc, fields, auxiliary_fields) =
     carbon_ratio(i, j, k, grid, bgc.plankton, bgc, fields) * 
     nutrient_uptake(i, j, k, grid, plankton, bgc, fields, auxiliary_fields)

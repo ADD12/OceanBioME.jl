@@ -126,7 +126,7 @@ function manifest_multi_class_dissolved_particulate(dissolved_names, particulate
     return nothing
 end
 
-@generated function dissolved_remineralisation(i, j, k, grid, detritus::DissolvedParticulate{N, M, DN, PN}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where {N, M, DN, PN, FT}
+@inline @generated function dissolved_remineralisation(i, j, k, grid, detritus::DissolvedParticulate{N, M, DN, PN}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where {N, M, DN, PN, FT}
     combined = Expr(:block)
     push!(combined.args, :(total = zero($FT)))
     for (m, name) in enumerate(PN)
@@ -138,7 +138,7 @@ end
     return combined
 end
 
-@generated function inorganic_waste(i, j, k, grid, detritus::DissolvedParticulate{N, M, DN, PN}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where {N, M, DN, PN, FT}
+@inline @generated function inorganic_waste(i, j, k, grid, detritus::DissolvedParticulate{N, M, DN, PN}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where {N, M, DN, PN, FT}
     combined = Expr(:block)
     push!(combined.args, :(total = zero($FT)))
     for (m, name) in enumerate(PN)
@@ -154,7 +154,7 @@ end
     return combined
 end
 
-@generated function calcite_dissolution(i, j, k, grid, detritus::DissolvedParticulate{N, M, DN, PN}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where {N, M, DN, PN, FT}
+@inline @generated function calcite_dissolution(i, j, k, grid, detritus::DissolvedParticulate{N, M, DN, PN}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where {N, M, DN, PN, FT}
     combined = Expr(:block)
     push!(combined.args, :(total = zero($FT)))
     for (m, name) in enumerate(PN)

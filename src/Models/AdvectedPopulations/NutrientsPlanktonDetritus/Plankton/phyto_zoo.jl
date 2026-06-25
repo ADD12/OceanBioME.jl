@@ -150,7 +150,7 @@ biogeochemical_drift_velocity(bgc::PhytoZoo_NPD, ::Val{:Z}) =
 @inline calcite_rain_ratio(i, j, k, grid, plankton::PhytoZoo, ::NPD{FT}, fields) where FT = plankton.rain_ratio
 @inline chlorophyll(plankton::PhytoZoo, model) = plankton.chlorophyll_ratio * model.tracers.P
 
-@inline limiting_nutrients(::PhytoZoo{<:NamedTuple{LN}}) where LN = LN
+@inline limiting_nutrients(::PhytoZoo{LN}) where LN = LN
 
 @inline nutrient_half_saturations(plankton::PhytoZoo, ::Val{:N})   = plankton.nutrient_half_saturations.nitrate
 @inline nutrient_half_saturations(plankton::PhytoZoo, ::Val{:NO₃}) = plankton.nutrient_half_saturations.nitrate
@@ -328,6 +328,10 @@ end
     return g * (1-p) * L * ePOM / (food_concentration + eps(zero(P))) * Z
 end
 
+@inline grazing(i, j, k, grid, ::Val{:sPOC}, plankton::PhytoZoo, bgc::NPD, fields, auxiliary_fields) =
+    carbon_ratio(i, j, k, grid, plankton, bgc, fields) * 
+    grazing(i, j, k, grid, Val(:sPON), plankton, bgc, fields, auxiliary_fields)
+
 @inline function weighted_phytoplankton_preference(plankton::PhytoZoo, P::FT, sPOM) where FT
     p̃ = plankton.preference_for_phytoplankton
 
@@ -341,12 +345,14 @@ end
 @inline edible_particulate_organic_matter(i, j, k, grid, ::Detritus, plankton::PhytoZoo, bgc, fields) = 
     @inbounds plankton.edible_fraction_of_detritus * fields.D[i, j, k]
 
-
 @inline edible_particulate_organic_matter(i, j, k, grid, ::DissolvedParticulate{<:Any, 1, <:Any, PN}, plankton::PhytoZoo, bgc, fields) where PN = 
     @inbounds plankton.edible_fraction_of_detritus * getproperty(fields, PN[1])[i, j, k]
 
 @inline edible_particulate_organic_matter(i, j, k, grid, ::DissolvedParticulate{<:Any, 2}, plankton::PhytoZoo, bgc, fields) = 
     @inbounds fields.sPOM[i, j, k] # this isn't generic because the user might rename the particles...
+
+@inline edible_particulate_organic_matter(i, j, k, grid, ::CarbonNitrogenDissolvedParticulate, plankton::PhytoZoo, bgc, fields) = 
+    @inbounds fields.sPON[i, j, k] 
 
 # waste routing
 @inline function solid_waste(i, j, k, grid, plankton::PhytoZoo, bgc, fields, auxiliary_fields)

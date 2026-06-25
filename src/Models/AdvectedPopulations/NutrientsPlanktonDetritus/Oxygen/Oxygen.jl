@@ -3,17 +3,22 @@ module OxygenModels
 export Oxygen
 
 using ..NutrientsPlanktonDetritusModels:
-    NutrientsPlanktonDetritus
+    NutrientsPlanktonDetritus,
+    inorganic_nitrogen_waste
 
 using ..NutrientsPlanktonDetritusModels.NutrientsModels:
     Nutrients,
     NitrateAmmonia,
     nutrient_uptake,
-    nitrification
+    nitrification,
+    SingleTracerNutrient
 
 using ..NutrientsPlanktonDetritusModels.InorganicCarbonModels:
     primary_production,
     inorganic_carbon_waste
+
+using ..NutrientsPlanktonDetritusModels: inorganic_waste
+using ..NutrientsPlanktonDetritusModels.DetritusModels: CarbonNitrogenDissolvedParticulate
 
 import Base: summary, show
 
@@ -80,6 +85,21 @@ end
       - rP * inorganic_carbon_waste(i, j, k, grid,bgc.plankton, bgc, fields, auxiliary_fields)
       - rP * inorganic_carbon_waste(i, j, k, grid,bgc.detritus, bgc, fields, auxiliary_fields)
     )
+end
+
+const OxygenCNDP{FT} = NutrientsPlanktonDetritus{FT, <:Nutrients{<:SingleTracerNutrient}, <:Any, <:CarbonNitrogenDissolvedParticulate, <:Any, <:Oxygen}
+
+# CNDP tracks C and N separately so nitrification oxygen must use N-tracers, not C-tracers
+@inline function (bgc::OxygenCNDP)(i, j, k, grid, ::Val{:O₂}, clock, fields, auxiliary_fields)
+    rP = bgc.oxygen.production_oxygen_carbon_ratio
+    rN = bgc.oxygen.nitrification_oxygen_carbon_ratio
+    rC = carbon_ratio(i, j, k, grid, bgc.plankton, bgc, fields)
+
+    return (rP + rN) * (
+        primary_production(i, j, k, grid, bgc.plankton, bgc, fields, auxiliary_fields)
+      - inorganic_carbon_waste(i, j, k, grid, bgc.plankton, bgc, fields, auxiliary_fields)
+    ) - rP * inorganic_carbon_waste(i, j, k, grid, bgc.detritus, bgc, fields, auxiliary_fields) -
+        rN * rC * inorganic_nitrogen_waste(i, j, k, grid, bgc.detritus, bgc, fields, auxiliary_fields)
 end
 
 end

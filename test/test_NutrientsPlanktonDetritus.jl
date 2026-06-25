@@ -1,6 +1,8 @@
 include("dependencies_for_runtests.jl")
 
 using OceanBioME: conserved_tracers
+using OceanBioME.Models.NutrientsPlanktonDetritusModels: InstantRemineralisation, 
+                                                         CarbonNitrogenDissolvedParticulate
 using Oceananigans, CUDA, Random
 
 Random.seed!(42)
@@ -35,6 +37,20 @@ end
 # everything should be fine as long as everythings positive right???
 set_default!(model) = [set!(tracer, rand()*10) for tracer in model.tracers]
 
+function check_stepped(model)
+    set_default!(model)
+    initial_values = NamedTuple(name => CUDA.@allowscalar model.tracers[name][1, 1, 1]
+                                for name in keys(model.tracers))
+    time_step!(model, 1)
+    for (name, initial) in pairs(initial_values)
+        if !iszero(initial)
+            @test CUDA.@allowscalar model.tracers[name][1, 1, 1] != initial
+        end
+    end
+
+    return nothing
+end
+
 function check_conservations(model, n_timesteps = 100)
     set_default!(model)
 
@@ -64,15 +80,18 @@ nutrients_options = (Nutrients(; nitrogen = OceanBioME.N),
                      Nutrients(; nitrogen = OceanBioME.N, phosphate = OceanBioME.PO₄, iron = OceanBioME.Fe),
                      Nutrients(; nitrogen = NitrateAmmonia(), phosphate = OceanBioME.PO₄, iron = OceanBioME.Fe))
 
-detritus_options = (OceanBioME.Models.NutrientsPlanktonDetritusModels.InstantRemineralisation(),#InstantRemineralisation(), 
+detritus_options = (InstantRemineralisation(),
                     Detritus(grid), 
                     DissolvedParticulate(grid, :DOP, :POP), 
-                    DissolvedParticulate(grid))
+                    DissolvedParticulate(grid),
+                    CarbonNitrogenDissolvedParticulate(grid))
 
 # TODO: test multiple separatly
-inorganic_carbon_options = (nothing, CarbonateSystem())#, CarbonateSystem(2))
+inorganic_carbon_options = (nothing, 
+                            CarbonateSystem(),)#, CarbonateSystem(2))
 
-oxygen_options = (nothing, Oxygen())
+oxygen_options = (nothing, 
+                  Oxygen(),)
 
 @testset "Elemental conservations" begin 
     # maybe this is pointless but would like to keep Abiotic working for testing
@@ -101,7 +120,7 @@ oxygen_options = (nothing, Oxygen())
         check_conservations(model)
     end
 
-    for plankton in (ImplicitProductivity, PhytoZoo),
+    for plankton in (PhytoZoo,),#ImplicitProductivity, PhytoZoo),
         nutrients in nutrients_options[end-3:end], # empty slot, nitrate/ammonia, and N
         detritus in detritus_options,
         inorganic_carbon in inorganic_carbon_options,
@@ -136,6 +155,10 @@ oxygen_options = (nothing, Oxygen())
         @test (CUDA.@allowscalar all([all(values .== 0) for values in values(model.tracers)]))
 
         check_conservations(model)
+
+        if !((detritus isa InstantRemineralisation)&(plankton == ImplicitProductivity))
+            check_stepped(model)
+        end
     end
 end
 

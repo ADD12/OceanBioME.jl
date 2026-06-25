@@ -1,11 +1,4 @@
 
-"""
-    nutrient_uptake
-
-(i, j, k, grid, val_name, bgc.plankton, bgc, fields, auxiliary_fields)
-"""
-function nutrient_uptake end
-
 @inline (bgc::NutrientsNPD)(i, j, k, grid, val_name::Val{:N}, clock, fields, auxiliary_fields) = (
     inorganic_nitrogen_waste(i, j, k, grid, bgc.plankton, bgc, fields, auxiliary_fields)
   + inorganic_nitrogen_waste(i, j, k, grid, bgc.detritus, bgc, fields, auxiliary_fields)

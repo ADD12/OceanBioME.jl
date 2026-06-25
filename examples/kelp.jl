@@ -70,7 +70,7 @@ set!(particles, A = 10, N = 0.01, C = 0.1, z = z₀, x = Lx / 2, y = Ly / 2)
 biogeochemistry = LOBSTER(grid;
                           surface_PAR = PAR⁰,
                           inorganic_carbon = CarbonateSystem(),
-                          detritus = VariableRedfieldDetritus(),
+                          detritus = CarbonNitrogenDissolvedParticulate(grid),
                           oxygen = Oxygen(),
                           scale_negatives = true,
                           particles)
