@@ -76,7 +76,7 @@ show(io::IO, par::PrescribedAttenuationPAR) = print(io, summary(par)*" with type
 
 biogeochemical_auxiliary_fields(par::PrescribedAttenuationPhotosyntheticallyActiveRadiation) = (PAR = par.field, )
 
-adapt_structure(to, par::PrescribedAttenuationPAR) =
+Adapt.adapt_structure(to, par::PrescribedAttenuationPAR) =
     PrescribedAttenuationPhotosyntheticallyActiveRadiation(nothing,
-                                                           adapt(to, par.field),
-                                                           nothing)
+                                                           nothing,
+                                                           adapt(to, par.field))
