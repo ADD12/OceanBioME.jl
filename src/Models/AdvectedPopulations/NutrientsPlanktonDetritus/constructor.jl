@@ -2,7 +2,7 @@ using Oceananigans.Units
 
 using OceanBioME.Light: 
     TwoBandPhotosyntheticallyActiveRadiation,
-    PrescribedPhotosyntheticallyActiveRadiation
+    PrescribedAttenuationPAR
 
 using Oceananigans.Fields: ConstantField
 
@@ -59,8 +59,8 @@ ImplicitBiology(grid::AbstractGrid{FT};
                 plankton = ImplicitProductivity(FT;
                                                 nutrient_half_saturations = 
                                                     (nitrate = 7.17,                     # mmol N/m³
-                                                     phosphate = 0.5,                   # mmol N/m³
-                                                     iron = 1e-4)[limiting_nutrients]), # mmol Fe / m³),
+                                                     phosphate = 0.5,                    # mmol N/m³
+                                                     iron = 1e-4)[limiting_nutrients]),  # mmol Fe / m³),
                 detritus = DissolvedParticulate(grid, :DOP, :POP;
                                                 dissolved_remineralisation_rate = 2/365/day,
                                                 particulate_remineralisation_rate = 0.03/day,
@@ -69,7 +69,7 @@ ImplicitBiology(grid::AbstractGrid{FT};
                                                 open_bottom),
                 inorganic_carbon = CarbonateSystem(),
                 surface_PAR = default_surface_PAR,
-                light_attenuation = PrescribedPhotosyntheticallyActiveRadiation(ConstantField(surface_PAR)),
+                light_attenuation = PrescribedAttenuationPAR(grid, surface_PAR),
                 kwargs...) where FT =
     NutrientsPlanktonDetritus(grid; nutrients, plankton, detritus, inorganic_carbon, light_attenuation, kwargs...)
 
@@ -101,7 +101,7 @@ NPZD(grid::AbstractGrid{FT};
                          light_half_saturation = (0.6989/day)/(0.1953/day)),
      detritus = Detritus(grid; open_bottom),
      surface_PAR = default_surface_PAR,
-     light_attenuation = default_light(; grid, surface_PAR),
+     light_attenuation = default_light(grid, surface_PAR),
      kwargs...) where FT =
     NutrientsPlanktonDetritus(grid; nutrients, plankton, detritus, light_attenuation, kwargs...)
 
@@ -118,6 +118,6 @@ LOBSTER(grid::AbstractGrid{FT};
                                                          iron = 2e-4)[limiting_nutrients]), # mmol Fe / m³
         detritus = DissolvedParticulate(grid; open_bottom),
         surface_PAR = default_surface_PAR,
-        light_attenuation = default_light(; grid, surface_PAR),
+        light_attenuation = default_light(grid, surface_PAR),
         kwargs...) where FT =
     NutrientsPlanktonDetritus(grid; nutrients, plankton, detritus, light_attenuation, kwargs...)

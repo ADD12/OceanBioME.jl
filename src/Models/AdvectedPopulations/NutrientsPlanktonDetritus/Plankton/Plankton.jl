@@ -31,7 +31,8 @@ using ..NutrientsPlanktonDetritusModels.NutrientsModels:
 using ..NutrientsPlanktonDetritusModels.DetritusModels:
     Detritus,
     DissolvedParticulate,
-    InstantRemineralisation
+    InstantRemineralisation,
+    CarbonNitrogenDissolvedParticulate
 
 import Adapt: adapt_structure
 import Base: show, summary
@@ -50,13 +51,23 @@ import ..NutrientsPlanktonDetritusModels:
     silicon_ratio,
     calcite_rain_ratio
 
-import ..NutrientsPlanktonDetritusModels.NutrientsModels: 
+import ..NutrientsPlanktonDetritusModels:
     inorganic_waste,
+    nutrient_uptake,
+    solid_waste,
+    dissolved_waste,
     inorganic_nitrogen_waste,
     inorganic_phosphate_waste,
     inorganic_iron_waste,
     inorganic_silicon_waste,
-    nutrient_uptake
+    solid_nitrogen_waste,
+    solid_phosphate_waste,
+    solid_iron_waste,
+    solid_silicon_waste,
+    dissolved_nitrogen_waste,
+    dissolved_phosphate_waste,
+    dissolved_iron_waste,
+    dissolved_silicon_waste
 
 import ..NutrientsPlanktonDetritusModels.InorganicCarbonModels:
     inorganic_carbon_waste,
@@ -65,16 +76,6 @@ import ..NutrientsPlanktonDetritusModels.InorganicCarbonModels:
     calcite_rain_ratio
 
 import ..NutrientsPlanktonDetritusModels.DetritusModels:
-    solid_waste,
-    solid_nitrogen_waste,
-    solid_phosphate_waste,
-    solid_iron_waste,
-    solid_silicon_waste,
-    dissolved_waste,
-    dissolved_nitrogen_waste,
-    dissolved_phosphate_waste,
-    dissolved_iron_waste,
-    dissolved_silicon_waste,
     grazing,
     calcite_precipitation
 

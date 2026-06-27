@@ -29,7 +29,7 @@ using Oceananigans.Units
 using Oceananigans: KernelFunctionOperation
 using Oceananigans.Fields: Field, TracerFields, CenterField, ZeroField, ConstantField, Center, Face
 
-using OceanBioME.Light: MultiBandPhotosyntheticallyActiveRadiation, default_surface_PAR, compute_euphotic_depth!
+using OceanBioME.Light: MultiBandPhotosyntheticallyActiveRadiation, compute_euphotic_depth!
 using OceanBioME: setup_velocity_fields, show_sinking_velocities, Biogeochemistry, DiscreteBiogeochemistry, ScaleNegativeTracers, CBMDayLength
 using OceanBioME.BoxModels: BoxModel
 using OceanBioME.Models.CarbonChemistryModel: CarbonChemistry
@@ -324,7 +324,7 @@ function PISCES(; grid,
                   carbon_chemistry = CarbonChemistry(FT),
                   calcite_saturation = CenterField(grid),
 
-                  surface_photosynthetically_active_radiation = default_surface_PAR,
+                  surface_photosynthetically_active_radiation = 100,
 
                   light_attenuation =
                     MultiBandPhotosyntheticallyActiveRadiation(; grid, 

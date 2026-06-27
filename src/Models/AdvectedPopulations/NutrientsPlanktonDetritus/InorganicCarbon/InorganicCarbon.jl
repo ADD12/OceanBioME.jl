@@ -15,16 +15,16 @@ using ..NutrientsPlanktonDetritusModels:
     calcite_rain_ratio
 
 using ..NutrientsPlanktonDetritusModels.NutrientsModels:
-    Nutrients, 
+    Nutrients,
     SingleTracerNutrient,
-    NitrateAmmonia,
-    nutrient_uptake,
-    inorganic_waste
+    NitrateAmmonia
 
-using ..NutrientsPlanktonDetritusModels.DetritusModels:
-    dissolved_waste,
-    calcite_dissolution,
-    Detritus
+using ..NutrientsPlanktonDetritusModels: 
+    dissolved_waste, 
+    calcite_dissolution, 
+    nutrient_uptake,
+    inorganic_carbon_waste,
+    dissolved_carbon_waste
 
 import Base: summary, show
 

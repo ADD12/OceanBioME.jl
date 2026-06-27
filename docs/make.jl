@@ -67,8 +67,10 @@ pisces_pages = ["PISCES" => "model_components/biogeochemical/PISCES/PISCES.md",
 
 bgc_pages = [
     "Overview" => "model_components/biogeochemical/index.md",
+    "NPD framework" => "model_components/biogeochemical/abstract_NPD_models.md",
     "LOBSTER" => "model_components/biogeochemical/LOBSTER.md",
     "NPZD" => "model_components/biogeochemical/NPZ.md",
+    "ImplicitBiology" => "model_components/biogeochemical/ImplicitBiology.md",
     "PISCES" => pisces_pages
 ]
 

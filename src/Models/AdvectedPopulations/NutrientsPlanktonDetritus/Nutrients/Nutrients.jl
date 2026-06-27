@@ -12,6 +12,14 @@ using ..NutrientsPlanktonDetritusModels:
     iron_ratio,
     silicon_ratio
 
+using ..NutrientsPlanktonDetritusModels:
+    inorganic_waste,
+    nutrient_uptake,
+    inorganic_nitrogen_waste,
+    inorganic_phosphate_waste,
+    inorganic_iron_waste,
+    inorganic_silicon_waste
+
 import Oceananigans.Biogeochemistry: 
     required_biogeochemical_tracers,
     required_biogeochemical_auxiliary_fields

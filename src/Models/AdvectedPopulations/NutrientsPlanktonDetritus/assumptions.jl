@@ -1,5 +1,11 @@
 # the default assumptions
 
+function dissolved_waste end
+function solid_waste end
+function calcite_dissolution end
+function inorganic_waste end
+function nutrient_uptake end
+
 @inline nitrogen_ratio(i, j, k, grid, plankton, ::NutrientsPlanktonDetritus{FT}, fields) where FT = 
     one(FT)
 
@@ -15,5 +21,29 @@
 @inline silicon_ratio(i, j, k, grid, plankton, ::NutrientsPlanktonDetritus{FT}, fields) where FT = 
     zero(FT)
 
-@inline calcite_rain_ratio(i, j, k, grid, plankton, ::NutrientsPlanktonDetritus{FT}, fields) where FT = 
+@inline calcite_rain_ratio(i, j, k, grid, plankton, ::NutrientsPlanktonDetritus{FT}, fields) where FT =
     zero(FT)
+
+for (element, symbol) in pairs((nitrogen = :N, phosphate = :PO₄, iron = :Fe, silicon = :Si, carbon = :C))
+    inorganic_waste_name  = Symbol(:inorganic_, element, :_waste)
+    solid_waste_name      = Symbol(:solid_,     element, :_waste)
+    dissolved_waste_name  = Symbol(:dissolved_, element, :_waste)
+    ratio_name            = Symbol(element, :_ratio)
+    @eval begin
+        @inline $inorganic_waste_name(i, j, k, grid, plankton_or_detritus, bgc, fields, auxiliary_fields) =
+            $ratio_name(i, j, k, grid, bgc.plankton, bgc, fields) *
+            inorganic_waste(i, j, k, grid, plankton_or_detritus, bgc, fields, auxiliary_fields)
+
+        @inline $solid_waste_name(i, j, k, grid, plankton, bgc, fields, auxiliary_fields) =
+            $ratio_name(i, j, k, grid, bgc.plankton, bgc, fields) *
+            solid_waste(i, j, k, grid, plankton, bgc, fields, auxiliary_fields)
+
+        @inline $dissolved_waste_name(i, j, k, grid, plankton, bgc, fields, auxiliary_fields) =
+            $ratio_name(i, j, k, grid, bgc.plankton, bgc, fields) *
+            dissolved_waste(i, j, k, grid, plankton, bgc, fields, auxiliary_fields)
+
+        @inline nutrient_uptake(i, j, k, grid, ::Val{$(QuoteNode(symbol))}, plankton, bgc, fields, auxiliary_fields) =
+            $ratio_name(i, j, k, grid, bgc.plankton, bgc, fields) *
+            nutrient_uptake(i, j, k, grid, plankton, bgc, fields, auxiliary_fields)
+    end
+end

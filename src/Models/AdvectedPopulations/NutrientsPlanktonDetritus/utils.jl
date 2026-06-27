@@ -129,3 +129,32 @@ end
 
 available_nutrients(nutrients) = 
     [name for name in propertynames(nutrients) if !isnothing(getproperty(nutrients, name))]
+
+group_element_tracers(::CarbonNitrogenDissolvedParticulate{FT}, bgc, ::Val{:nitrogen}) where FT =
+    (; DON = one(FT), sPON = one(FT), bPON = one(FT))
+
+function group_element_tracers(::CarbonNitrogenDissolvedParticulate, bgc::NPD, ::Val{:phosphate})
+    R_PN = phosphate_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing) / 
+          nitrogen_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
+
+    return (; DON = R_PN, sPON = R_PN, bPON = R_PN)
+end
+
+function group_element_tracers(::CarbonNitrogenDissolvedParticulate, bgc::NPD, ::Val{:iron})
+    R_FeN = iron_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing) / 
+            nitrogen_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
+
+    return (; DON = R_FeN, sPON = R_FeN, bPON = R_FeN)
+end
+
+function group_element_tracers(::CarbonNitrogenDissolvedParticulate{FT}, bgc, ::Val{:carbon}) where FT
+    rain_ratio = calcite_rain_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
+
+    return (; DOC = one(FT), sPOC = one(FT) + rain_ratio, bPOC = one(FT) + rain_ratio)
+end
+
+function group_element_tracers(::CarbonNitrogenDissolvedParticulate, bgc::NPD, ::Val{:oxygen})
+    rO = - bgc.oxygen.production_oxygen_carbon_ratio
+
+    return (; DOC = rO, sPOC = rO, bPOC = rO)
+end

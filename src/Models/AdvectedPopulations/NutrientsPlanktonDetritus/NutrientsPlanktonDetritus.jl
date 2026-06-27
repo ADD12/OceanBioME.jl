@@ -7,7 +7,7 @@ export LOBSTER, NPZD, ImplicitBiology
 export Nutrients, N, PO₄, Si, Fe, NitrateAmmonia
 export CarbonateSystem
 export Abiotic, ImplicitProductivity, PhytoZoo
-export Detritus, DissolvedParticulate, InstantRemineralisation
+export Detritus, DissolvedParticulate, InstantRemineralisation, CarbonNitrogenDissolvedParticulate
 export Oxygen
 
 using Adapt
@@ -40,8 +40,8 @@ include("nutrients_plankton_detritus.jl")
 include("assumptions.jl")
 
 include("Nutrients/Nutrients.jl")
-include("Detritus/Detritus.jl")
 include("InorganicCarbon/InorganicCarbon.jl")
+include("Detritus/Detritus.jl")
 include("Plankton/Plankton.jl")
 include("Oxygen/Oxygen.jl")
 
