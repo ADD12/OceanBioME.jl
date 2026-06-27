@@ -86,7 +86,7 @@ detritus_options = (InstantRemineralisation(),
                     DissolvedParticulate(grid),
                     CarbonNitrogenDissolvedParticulate(grid))
 
-# TODO: test multiple separatly
+# TODO: test multiple separately
 inorganic_carbon_options = (nothing, 
                             CarbonateSystem(),)#, CarbonateSystem(2))
 

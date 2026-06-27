@@ -66,7 +66,7 @@ function PhytoZoo(FT = Float64;
                   excretion_inorganic_fraction = 0.5,
                   preference_for_phytoplankton = 0.5,
                   maximum_grazing_rate = 9.26e-6,                 # 1/s
-                  grazing_half_saturation = 1.0,                  # mmol N/m²
+                  grazing_half_saturation = 1.0,                  # mmol N/m³
                   zooplankton_assimilation_fraction = 0.7,
                   edible_fraction_of_detritus = 0.5,
 
