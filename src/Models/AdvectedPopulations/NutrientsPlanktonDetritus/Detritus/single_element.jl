@@ -155,19 +155,19 @@ function manifest_multi_class_dissolved_particulate(dissolved_names, particulate
     end
 
     @eval begin
-        @inline function dissolved_remineralisation(i, j, k, grid, detritus::DissolvedParticulate{$N, $M}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where FT
+        @inline function dissolved_remineralisation(i, j, k, grid, detritus::DissolvedParticulate{$N, $M, $dissolved_names, $particulate_names}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where FT
             $ex_dissolved_remineralisation
 
             return total
         end
 
-        @inline function inorganic_waste(i, j, k, grid, detritus::DissolvedParticulate{$N, $M}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where FT
+        @inline function inorganic_waste(i, j, k, grid, detritus::DissolvedParticulate{$N, $M, $dissolved_names, $particulate_names}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where FT
             $ex_inorganic_remineralisation
 
             return total
         end
 
-        @inline function calcite_dissolution(i, j, k, grid, detritus::DissolvedParticulate{$N, $M}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where FT
+        @inline function calcite_dissolution(i, j, k, grid, detritus::DissolvedParticulate{$N, $M, $dissolved_names, $particulate_names}, bgc::NPD_DP{FT}, fields, auxiliary_fields) where FT
             $ex_calcite_remineralisation
 
             total += dissolved_waste(i, j, k, grid, bgc.plankton, bgc, fields, auxiliary_fields)
