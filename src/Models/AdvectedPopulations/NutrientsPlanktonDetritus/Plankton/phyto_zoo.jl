@@ -349,7 +349,7 @@ end
     @inbounds plankton.edible_fraction_of_detritus * getproperty(fields, PN[1])[i, j, k]
 
 @inline edible_particulate_organic_matter(i, j, k, grid, ::DissolvedParticulate{<:Any, 2, <:Any, PN}, plankton::PhytoZoo, bgc, fields) where PN =
-    @inbounds plankton.edible_fraction_of_detritus * getproperty(fields, PN[1])[i, j, k]
+    @inbounds fields.sPOM[i, j, k] 
 
 @inline edible_particulate_organic_matter(i, j, k, grid, ::CarbonNitrogenDissolvedParticulate, plankton::PhytoZoo, bgc, fields) = 
     @inbounds fields.sPON[i, j, k] 
