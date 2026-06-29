@@ -1,6 +1,6 @@
 using Oceananigans.Fields: ZeroField
 
-struct PhytoZoo{LN, TT, FT, LL, TC, PS, ZS} <: AbstractPlankton{LN}
+struct PhytoZoo{LN, EN, TT, FT, LL, TC, PS, ZS} <: AbstractPlankton{LN}
           nutrient_half_saturations :: NamedTuple{LN, TT}
 
          nitrate_ammonia_inhibition :: FT
@@ -24,6 +24,7 @@ struct PhytoZoo{LN, TT, FT, LL, TC, PS, ZS} <: AbstractPlankton{LN}
             grazing_half_saturation :: FT
   zooplankton_assimilation_fraction :: FT
         edible_fraction_of_detritus :: FT
+               edible_detritus_name :: Val{EN}
 
 # In the original this fraction of calcite is dissolved in zooplankton, but without explicitly tracking calcite we can't close the
 # budget because the calcite to carbon ratio in the detritus will vary depending on where the waste comes from
@@ -69,7 +70,8 @@ function PhytoZoo(FT = Float64;
                   grazing_half_saturation = 1.0,                  # mmol N/m³
                   zooplankton_assimilation_fraction = 0.7,
                   edible_fraction_of_detritus = 0.5,
-
+                  edible_detritus_name = :sPOM,                   # if multiple detritus classes are present
+                                                                  # this is edible in full, if only one then the fraction is used
                   carbon_ratio = 6.56,                            # mol C / mol N
                   iron_ratio = 4.6375e-5,                         # mol Fe / mol N - from PISCES optimal ratio
                   phosphate_ratio = 1/16,                         # mol P / mol N
@@ -105,6 +107,7 @@ function PhytoZoo(FT = Float64;
                      convert(FT, grazing_half_saturation),
                      convert(FT, zooplankton_assimilation_fraction),
                      convert(FT, edible_fraction_of_detritus),
+                     Val(edible_detritus_name),
                      convert(FT, carbon_ratio),
                      convert(FT, iron_ratio),
                      convert(FT, phosphate_ratio),
@@ -151,6 +154,7 @@ biogeochemical_drift_velocity(bgc::PhytoZoo_NPD, ::Val{:Z}) =
 @inline chlorophyll(plankton::PhytoZoo, model) = plankton.chlorophyll_ratio * model.tracers.P
 
 @inline limiting_nutrients(::PhytoZoo{LN}) where LN = LN
+@inline edible_detritus_name(::PhytoZoo{<:Any, EN}) where EN = EN
 
 @inline nutrient_half_saturations(plankton::PhytoZoo, ::Val{:N})   = plankton.nutrient_half_saturations.nitrate
 @inline nutrient_half_saturations(plankton::PhytoZoo, ::Val{:NO₃}) = plankton.nutrient_half_saturations.nitrate
@@ -348,8 +352,8 @@ end
 @inline edible_particulate_organic_matter(i, j, k, grid, ::DissolvedParticulate{<:Any, 1, <:Any, PN}, plankton::PhytoZoo, bgc, fields) where PN = 
     @inbounds plankton.edible_fraction_of_detritus * getproperty(fields, PN[1])[i, j, k]
 
-@inline edible_particulate_organic_matter(i, j, k, grid, ::DissolvedParticulate{<:Any, 2, <:Any, PN}, plankton::PhytoZoo, bgc, fields) where PN =
-    @inbounds fields.sPOM[i, j, k] 
+@inline edible_particulate_organic_matter(i, j, k, grid, ::DissolvedParticulate, plankton::PhytoZoo, bgc, fields) =
+    @inbounds getproperty(fields, edible_detritus_name(plankton))[i, j, k] 
 
 @inline edible_particulate_organic_matter(i, j, k, grid, ::CarbonNitrogenDissolvedParticulate, plankton::PhytoZoo, bgc, fields) = 
     @inbounds fields.sPON[i, j, k] 
@@ -424,6 +428,7 @@ Adapt.adapt_structure(to, pz::PhytoZoo) =
              adapt(to, pz.grazing_half_saturation),
              adapt(to, pz.zooplankton_assimilation_fraction),
              adapt(to, pz.edible_fraction_of_detritus),
+             nothing,
              adapt(to, pz.carbon_ratio),
              adapt(to, pz.iron_ratio),
              adapt(to, pz.phosphate_ratio),
