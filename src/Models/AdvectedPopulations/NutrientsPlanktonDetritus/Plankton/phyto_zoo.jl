@@ -428,7 +428,7 @@ Adapt.adapt_structure(to, pz::PhytoZoo) =
              adapt(to, pz.grazing_half_saturation),
              adapt(to, pz.zooplankton_assimilation_fraction),
              adapt(to, pz.edible_fraction_of_detritus),
-             nothing,
+             adapt(to, pz.edible_detritus_name),
              adapt(to, pz.carbon_ratio),
              adapt(to, pz.iron_ratio),
              adapt(to, pz.phosphate_ratio),
