@@ -13,8 +13,8 @@ const NPD_AIC{FT} = NutrientsPlanktonDetritus{FT, <:Any, <:Any, <:Any, <:Abstrac
     PN = phosphate_ratio(i, j, k, grid, bgc.plankton, bgc, fields) / nitrogen_ratio(i, j, k, grid, bgc.plankton, bgc, fields)
 
     return (
-        nitrate_primary_production(i, j, k, grid, bgc.plankton, bgc, clock, fields, auxiliary_fields) * (1 - PN)
-      - ammonia_primary_production(i, j, k, grid, bgc.plankton, bgc, clock, fields, auxiliary_fields) * (1 + PN) 
+      - nitrate_primary_production(i, j, k, grid, bgc.plankton, bgc, clock, fields, auxiliary_fields) * (1 + PN)
+      + ammonia_primary_production(i, j, k, grid, bgc.plankton, bgc, clock, fields, auxiliary_fields) * (1 - PN)
       - 2 * net_calcite_production(i, j, k, grid, bgc, fields, auxiliary_fields)
     )
 end

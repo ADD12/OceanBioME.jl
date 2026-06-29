@@ -162,6 +162,21 @@ oxygen_options = (nothing,
     end
 end
 
+@testset "Alkalinity sign" begin
+    biogeochemistry = LOBSTER(grid; inorganic_carbon = CarbonateSystem(), plankton = PhytoZoo(rain_ratio = 0))
+
+    model = NonhydrostaticModel(grid; advection = nothing, biogeochemistry)
+
+    set!(model, NO₃ = 10, NH₄ = 0, P = 1, Z = 0.1, DOM = 0.1, sPOM = 0.1, bPOM = 0.1, DIC = 2000, Alk = 1900)
+
+    NO₃₀, NH₄₀, Alk₀ = CUDA.@allowscalar model.tracers.NO₃[1, 1, 1], model.tracers.NH₄[1, 1, 1], model.tracers.Alk[1, 1, 1]
+    time_step!(model, 1) 
+    ΔNO₃, ΔNH₄, ΔAlk = CUDA.@allowscalar model.tracers.NO₃[1, 1, 1] - NO₃₀, model.tracers.NH₄[1, 1, 1] - NH₄₀, model.tracers.Alk[1, 1, 1] - Alk₀
+
+    @test ΔNO₃ < 0 && ΔAlk > 0 # net nitrate uptake raises alkalinity
+    @test isapprox(ΔAlk, -(1 + 1/16) * ΔNO₃ + (1 - 1/16) * ΔNH₄)
+end
+
 @testset "Explicit particle sinking" begin # not sure how essential this is but seems worth doing
     grid = RectilinearGrid(architecture; size=(1, 1, 2), extent=(1, 1, 2))
 
