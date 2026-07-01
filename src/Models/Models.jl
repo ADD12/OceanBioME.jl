@@ -10,7 +10,7 @@ export N, PO₄, Si, Fe
 export Nutrients, NitrateAmmonia
 export CarbonateSystem
 export Abiotic, ImplicitProductivity, PhytoZoo
-export Detritus, DissolvedParticulate, InstantRemineralisation
+export Detritus, DissolvedParticulate, InstantRemineralisation, CarbonNitrogenDissolvedParticulate
 export Oxygen
 
 export SugarKelp, SugarKelpParticles, GiantKelp

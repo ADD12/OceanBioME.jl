@@ -46,7 +46,6 @@ steps:
         - label: ":rowboat: CPU unit tests"
           env:
            CUDA_VISIBLE_DEVICES: "-1"
-           JULIA_DEPOT_PATH: "$BUILDKITE_HOME/.julia-oceananigans-cpu"
           commands: |
             cd "$OCEANBIOME_DIR"
             $JULIA +$JULIA_VERSION -O0 --color=yes --project -e 'using Pkg; Pkg.test()'
