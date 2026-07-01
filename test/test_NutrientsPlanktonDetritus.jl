@@ -120,7 +120,7 @@ oxygen_options = (nothing,
         check_conservations(model)
     end
 
-    for plankton in (PhytoZoo,),#ImplicitProductivity, PhytoZoo),
+    for plankton in (PhytoZoo, ImplicitProductivity),
         nutrients in nutrients_options[end-3:end], # empty slot, nitrate/ammonia, and N
         detritus in detritus_options,
         inorganic_carbon in inorganic_carbon_options,
@@ -295,7 +295,7 @@ using OceanBioME.Models.NutrientsPlanktonDetritusModels: SingleTracerNutrient
     @test lobster.underlying_biogeochemistry.nutrients.nitrogen |> ((::NitrateAmmonia{FT}) where FT) -> FT == Float32
 
     # plankton is converted
-    @test lobster.underlying_biogeochemistry.plankton |> ((::PhytoZoo{<:Any, <:Any, FT}) where FT) -> FT == Float32
+    @test lobster.underlying_biogeochemistry.plankton |> ((::PhytoZoo{<:Any, <:Any, <:Any, FT}) where FT) -> FT == Float32
     @test implicit.underlying_biogeochemistry.plankton |> ((::ImplicitProductivity{FT}) where FT) -> FT == Float32
 
     # detritus
