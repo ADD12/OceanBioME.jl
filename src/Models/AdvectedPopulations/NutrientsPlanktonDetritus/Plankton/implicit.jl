@@ -54,13 +54,11 @@ end
 required_biogeochemical_tracers(::ImplicitProductivity) = tuple()
 required_biogeochemical_auxiliary_fields(::ImplicitProductivity) = (:PAR, )
 
-@inline phosphate_ratio(i, j, k, grid, ::ImplicitProductivity, ::NPD{FT}, fields) where FT = 
-    one(FT)
-
-@inline nitrogen_ratio(i, j, k, grid, plankton::ImplicitProductivity, ::NPD{FT}, fields) where FT = plankton.nitrogen_ratio
-@inline carbon_ratio(i, j, k, grid, plankton::ImplicitProductivity, ::NPD{FT}, fields) where FT = plankton.carbon_ratio
-@inline iron_ratio(i, j, k, grid, plankton::ImplicitProductivity, ::NPD{FT}, fields) where FT = plankton.iron_ratio
-@inline calcite_rain_ratio(i, j, k, grid, plankton::ImplicitProductivity, ::NPD{FT}, fields) where FT = plankton.rain_ratio
+@inline phosphate_ratio(::ImplicitProductivity, ::NPD{FT}) where FT = one(FT)
+@inline nitrogen_ratio(plankton::ImplicitProductivity, ::NPD{FT}) where FT = plankton.nitrogen_ratio
+@inline carbon_ratio(plankton::ImplicitProductivity, ::NPD{FT}) where FT = plankton.carbon_ratio
+@inline iron_ratio(plankton::ImplicitProductivity, ::NPD{FT}) where FT = plankton.iron_ratio
+@inline calcite_rain_ratio(plankton::ImplicitProductivity, ::NPD{FT}) where FT = plankton.rain_ratio
 
 @inline limiting_nutrients(::ImplicitProductivity{<:Any, <:NamedTuple{LN}}) where LN = LN
 

@@ -6,23 +6,23 @@ function calcite_dissolution end
 function inorganic_waste end
 function nutrient_uptake end
 
-@inline nitrogen_ratio(i, j, k, grid, plankton, ::NutrientsPlanktonDetritus{FT}, fields) where FT = 
-    one(FT)
+@inline nitrogen_ratio(i, j, k, grid, plankton, bgc, fields) = nitrogen_ratio(plankton, bgc)
+@inline nitrogen_ratio(plankton, ::NutrientsPlanktonDetritus{FT}) where FT = one(FT)
 
-@inline carbon_ratio(i, j, k, grid, plankton, ::NutrientsPlanktonDetritus{FT}, fields) where FT = 
-    convert(FT, 106/16)
+@inline carbon_ratio(i, j, k, grid, plankton, bgc, fields) = carbon_ratio(plankton, bgc)
+@inline carbon_ratio(plankton, ::NutrientsPlanktonDetritus{FT}) where FT = convert(FT, 106/16)
 
-@inline phosphate_ratio(i, j, k, grid, plankton, ::NutrientsPlanktonDetritus{FT}, fields) where FT = 
-    convert(FT, 1/16)
+@inline phosphate_ratio(i, j, k, grid, plankton, bgc, fields) = phosphate_ratio(plankton, bgc)
+@inline phosphate_ratio(plankton, ::NutrientsPlanktonDetritus{FT}) where FT = convert(FT, 1/16)
 
-@inline iron_ratio(i, j, k, grid, plankton, ::NutrientsPlanktonDetritus{FT}, fields) where FT = 
-    convert(FT, 0.0032/16) 
+@inline iron_ratio(i, j, k, grid, plankton, bgc, fields) = iron_ratio(plankton, bgc)
+@inline iron_ratio(plankton, ::NutrientsPlanktonDetritus{FT}) where FT = convert(FT, 0.0032/16) 
 
-@inline silicon_ratio(i, j, k, grid, plankton, ::NutrientsPlanktonDetritus{FT}, fields) where FT = 
-    zero(FT)
+@inline silicon_ratio(i, j, k, grid, plankton, bgc, fields) = silicon_ratio(plankton, bgc)
+@inline silicon_ratio(plankton, ::NutrientsPlanktonDetritus{FT}) where FT = zero(FT)
 
-@inline calcite_rain_ratio(i, j, k, grid, plankton, ::NutrientsPlanktonDetritus{FT}, fields) where FT =
-    zero(FT)
+@inline calcite_rain_ratio(i, j, k, grid, plankton, bgc, fields) = calcite_rain_ratio(plankton, bgc)
+@inline calcite_rain_ratio(plankton, ::NutrientsPlanktonDetritus{FT}) where FT = zero(FT)
 
 for (element, symbol) in pairs((nitrogen = :N, phosphate = :PO₄, iron = :Fe, silicon = :Si, carbon = :C))
     inorganic_waste_name  = Symbol(:inorganic_, element, :_waste)

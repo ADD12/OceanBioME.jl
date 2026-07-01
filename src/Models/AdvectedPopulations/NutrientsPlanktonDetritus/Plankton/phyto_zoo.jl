@@ -146,11 +146,11 @@ biogeochemical_drift_velocity(bgc::PhytoZoo_NPD, ::Val{:P}) =
 biogeochemical_drift_velocity(bgc::PhytoZoo_NPD, ::Val{:Z}) = 
     bgc.plankton.zooplankton_sinking_velocity
 
-@inline nitrogen_ratio(i, j, k, grid, ::PhytoZoo, ::NPD{FT}, fields) where FT = one(FT)
-@inline phosphate_ratio(i, j, k, grid, plankton::PhytoZoo, ::NPD{FT}, fields) where FT = plankton.phosphate_ratio
-@inline carbon_ratio(i, j, k, grid, plankton::PhytoZoo, ::NPD{FT}, fields) where FT = plankton.carbon_ratio
-@inline iron_ratio(i, j, k, grid, plankton::PhytoZoo, ::NPD{FT}, fields) where FT = plankton.iron_ratio
-@inline calcite_rain_ratio(i, j, k, grid, plankton::PhytoZoo, ::NPD{FT}, fields) where FT = plankton.rain_ratio
+@inline nitrogen_ratio(::PhytoZoo, ::NPD{FT}) where FT = one(FT)
+@inline phosphate_ratio(plankton::PhytoZoo, ::NPD{FT}) where FT = plankton.phosphate_ratio
+@inline carbon_ratio(plankton::PhytoZoo, ::NPD{FT}) where FT = plankton.carbon_ratio
+@inline iron_ratio(plankton::PhytoZoo, ::NPD{FT}) where FT = plankton.iron_ratio
+@inline calcite_rain_ratio(plankton::PhytoZoo, ::NPD{FT}) where FT = plankton.rain_ratio
 @inline chlorophyll(plankton::PhytoZoo, model) = plankton.chlorophyll_ratio * model.tracers.P
 
 @inline limiting_nutrients(::PhytoZoo{LN}) where LN = LN

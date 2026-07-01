@@ -53,7 +53,7 @@ for thing in (PhytoZoo, Detritus, DissolvedParticulate)
         ratio_name = Symbol(element, :_ratio)
         @eval begin
             function group_element_tracers(group::$thing, bgc, ::Val{$(QuoteNode(element))})
-                ratio = $(ratio_name)(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
+                ratio = $(ratio_name)(bgc.plankton, bgc)
                 names = required_biogeochemical_tracers(group)
                 return NamedTuple{names}(repeat([ratio], length(names)))
             end
@@ -64,8 +64,8 @@ end
 for thing in (PhytoZoo, Detritus)
     @eval begin
         function group_element_tracers(group::$thing, bgc, ::Val{:carbon}) # add specialisation for explicit calcite when done
-            ratio = carbon_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
-            rain_ratio = calcite_rain_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
+            ratio = carbon_ratio(bgc.plankton, bgc)
+            rain_ratio = calcite_rain_ratio(bgc.plankton, bgc)
 
             names = required_biogeochemical_tracers(group)
 
@@ -75,8 +75,8 @@ for thing in (PhytoZoo, Detritus)
 end
 
 function group_element_tracers(::DissolvedParticulate{N, M, DN, PN}, bgc, ::Val{:carbon}) where {N, M, DN, PN} # add specialisation for explicit calcite when done
-    ratio = carbon_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
-    rain_ratio = calcite_rain_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
+    ratio = carbon_ratio(bgc.plankton, bgc)
+    rain_ratio = calcite_rain_ratio(bgc.plankton, bgc)
     
     ratios = (repeat([ratio], N)...,
               repeat([ratio * (1 + rain_ratio)], M)...)
@@ -95,7 +95,7 @@ group_element_tracers(::Oxygen, bgc::NPD{FT}, ::Val{:oxygen}) where FT =
 for thing in (PhytoZoo, Detritus, DissolvedParticulate)
     @eval begin
         function group_element_tracers(group::$thing, bgc::NPD{<:Any, <:Any, <:Any, <:Any, <:Any, <:Oxygen}, ::Val{:oxygen}) 
-            ratio = carbon_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
+            ratio = carbon_ratio(bgc.plankton, bgc)
             rO = - bgc.oxygen.production_oxygen_carbon_ratio
 
             names = required_biogeochemical_tracers(group)
@@ -106,22 +106,22 @@ for thing in (PhytoZoo, Detritus, DissolvedParticulate)
 end
 
 group_element_tracers(::Nutrients{<:NitrateAmmonia}, bgc::NPD{<:Any, <:Any, <:Any, <:Any, <:Any, <:Oxygen}, ::Val{:oxygen}) = 
-    (; NO₃ = carbon_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing) * bgc.oxygen.nitrification_oxygen_carbon_ratio)
+    (; NO₃ = carbon_ratio(bgc.plankton, bgc) * bgc.oxygen.nitrification_oxygen_carbon_ratio)
 
 # got to give up on dispatch for this
 function group_element_tracers(nutrients::Nutrients, bgc::NPD{<:Any, <:Any, <:Any, <:Any, <:Any, <:Oxygen}, ::Val{:oxygen})
     if nutrients.nitrogen isa SingleTracerNutrient
-        return (; N = carbon_ratio(nothing,  nothing, nothing, nothing, bgc.plankton, bgc, nothing) /
-                      nitrogen_ratio(nothing,  nothing, nothing, nothing, bgc.plankton, bgc, nothing) * bgc.oxygen.nitrification_oxygen_carbon_ratio)
+        return (; N = carbon_ratio(bgc.plankton, bgc) /
+                      nitrogen_ratio(bgc.plankton, bgc) * bgc.oxygen.nitrification_oxygen_carbon_ratio)
     elseif nutrients.phosphate isa SingleTracerNutrient
-        return (; PO₄ = carbon_ratio(nothing,  nothing, nothing, nothing, bgc.plankton, bgc, nothing) /
-                        phosphate_ratio(nothing,  nothing, nothing, nothing, bgc.plankton, bgc, nothing) * bgc.oxygen.nitrification_oxygen_carbon_ratio)
+        return (; PO₄ = carbon_ratio(bgc.plankton, bgc) /
+                        phosphate_ratio(bgc.plankton, bgc) * bgc.oxygen.nitrification_oxygen_carbon_ratio)
     elseif nutrients.iron isa SingleTracerNutrient
-        return (; Fe = carbon_ratio(nothing,  nothing, nothing, nothing, bgc.plankton, bgc, nothing) /
-                       iron_ratio(nothing,  nothing, nothing, nothing, bgc.plankton, bgc, nothing) * bgc.oxygen.nitrification_oxygen_carbon_ratio)
+        return (; Fe = carbon_ratio(bgc.plankton, bgc) /
+                       iron_ratio(bgc.plankton, bgc) * bgc.oxygen.nitrification_oxygen_carbon_ratio)
     elseif nutrients.silicate isa SingleTracerNutrient
-        return (; Si = carbon_ratio(nothing,  nothing, nothing, nothing, bgc.plankton, bgc, nothing) /
-                       silicon_ratio(nothing,  nothing, nothing, nothing, bgc.plankton, bgc, nothing) * bgc.oxygen.nitrification_oxygen_carbon_ratio)
+        return (; Si = carbon_ratio(bgc.plankton, bgc) /
+                       silicon_ratio(bgc.plankton, bgc) * bgc.oxygen.nitrification_oxygen_carbon_ratio)
     else
         return NamedTuple()
     end
@@ -134,21 +134,21 @@ group_element_tracers(::CarbonNitrogenDissolvedParticulate{FT}, bgc, ::Val{:nitr
     (; DON = one(FT), sPON = one(FT), bPON = one(FT))
 
 function group_element_tracers(::CarbonNitrogenDissolvedParticulate, bgc::NPD, ::Val{:phosphate})
-    R_PN = phosphate_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing) / 
-          nitrogen_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
+    R_PN = phosphate_ratio(bgc.plankton, bgc) / 
+          nitrogen_ratio(bgc.plankton, bgc)
 
     return (; DON = R_PN, sPON = R_PN, bPON = R_PN)
 end
 
 function group_element_tracers(::CarbonNitrogenDissolvedParticulate, bgc::NPD, ::Val{:iron})
-    R_FeN = iron_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing) / 
-            nitrogen_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
+    R_FeN = iron_ratio(bgc.plankton, bgc) / 
+            nitrogen_ratio(bgc.plankton, bgc)
 
     return (; DON = R_FeN, sPON = R_FeN, bPON = R_FeN)
 end
 
 function group_element_tracers(::CarbonNitrogenDissolvedParticulate{FT}, bgc, ::Val{:carbon}) where FT
-    rain_ratio = calcite_rain_ratio(nothing, nothing, nothing, nothing, bgc.plankton, bgc, nothing)
+    rain_ratio = calcite_rain_ratio(bgc.plankton, bgc)
 
     return (; DOC = one(FT), sPOC = one(FT) + rain_ratio, bPOC = one(FT) + rain_ratio)
 end
