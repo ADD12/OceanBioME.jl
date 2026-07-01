@@ -39,7 +39,7 @@ small_grid = RectilinearGrid(size=(1, 1, 1), extent=(1, 1, 1))
 model_parameters = (LOBSTER(BoxModelGrid(); light_attenuation = nothing).underlying_biogeochemistry,
                     NPZD(BoxModelGrid(); light_attenuation = nothing).underlying_biogeochemistry,
                     SugarKelp(),
-                    TwoBandPhotosyntheticallyActiveRadiation(; grid = small_grid),
+                    TwoBandPhotosyntheticallyActiveRadiation(small_grid, 100),
                     SimpleMultiGSediment(small_grid).biogeochemistry,
                     InstantRemineralisationSediment(small_grid).biogeochemistry,
                     CarbonChemistry(),
