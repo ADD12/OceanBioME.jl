@@ -327,8 +327,8 @@ function PISCES(; grid,
                   surface_photosynthetically_active_radiation = 100,
 
                   light_attenuation =
-                    MultiBandPhotosyntheticallyActiveRadiation(; grid, 
-                                                                 surface_PAR = surface_photosynthetically_active_radiation),
+                    MultiBandPhotosyntheticallyActiveRadiation(grid, 
+                                                               surface_photosynthetically_active_radiation),
 
                   sinking_speeds = (POC = convert(FT, 2/day), 
                                     # might be more efficient to just precompute this
