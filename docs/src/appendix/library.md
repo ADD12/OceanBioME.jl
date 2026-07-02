@@ -15,6 +15,14 @@ Modules = [OceanBioME]
 Modules = [OceanBioME.Models.NutrientsPlanktonDetritusModels]
 ```
 
+```@autodocs
+Modules = [OceanBioME.Models.NutrientsPlanktonDetritusModels.PlanktonModels]
+```
+
+```@autodocs
+Modules = [OceanBioME.Models.NutrientsPlanktonDetritusModels.OxygenModels]
+```
+
 ### Pelagic Interactions Scheme for Carbon and Ecosystem Studies (PISCES)
 
 ```@autodocs
