@@ -9,7 +9,7 @@ Models requiring light attenuation models will set these up automatically, for e
 ## The multi band model
 The surface intensity is split into multiple bands (usually with equal weight, but users may specify custom weights), and the attenuation of each band (i) is computed from the radiative transfer equation:
 ```math
-\frac{\partial PAR^i}{\partial z} = PAR\^i (k^w(i) + \chi(i)Chl^{e(i)}),
+\frac{\partial PAR^i}{\partial z} = PAR^i (k^w(i) + \chi(i)Chl^{e(i)}),
 ```
 where ``Chl`` is the concentration of chlorophyll, ``k^w(i)`` is the band specific water attenuation coefficient, ``\chi(i)`` the chlorophyll attenuation coefficient, and ``e(i)`` the chlorophyll exponent.
 
