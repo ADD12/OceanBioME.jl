@@ -6,7 +6,7 @@
 |------|---------|-----------------|
 | Nutrients | `nutrients` | `Nutrients` (constructed with `NitrateAmmonia`, `N`, `PO₄`, `Fe`, or `Si` sub-components) |
 | Plankton | `plankton` | `Abiotic`, `ImplicitProductivity`, `PhytoZoo` |
-| Detritus | `detritus` | `InstantRemineralisation`, `Detritus`, `DissolvedParticulate`, `VariableDissolvedParticulate` |
+| Detritus | `detritus` | `InstantRemineralisationDetritus`, `Detritus`, `DissolvedParticulate`, `CarbonNitrogenDissolvedParticulate` |
 | Inorganic carbon | `inorganic_carbon` | `nothing` (default), `CarbonateSystem` |
 | Oxygen | `oxygen` | `nothing` (default), `Oxygen` |
 

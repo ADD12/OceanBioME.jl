@@ -1,6 +1,10 @@
 """
-    Abiotic
-No life, does nothing
+    Abiotic()
+
+An empty plankton component for the `plankton` slot of a [`NutrientsPlanktonDetritus`](@ref) model.
+It adds no tracers and produces no biological source or sink terms — all uptake and waste fluxes are
+zero. It is the default plankton and is useful for purely abiotic experiments (e.g. carbonate
+chemistry or gas exchange with no biology).
 """
 struct Abiotic <: AbstractPlankton{tuple()} end
 

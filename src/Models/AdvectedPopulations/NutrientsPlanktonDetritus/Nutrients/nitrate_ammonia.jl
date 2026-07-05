@@ -3,6 +3,18 @@
 ##### Separate nitrogen and ammonia
 #####
 # this can model how you might make e.g. a complicated iron cycle
+"""
+    NitrateAmmonia(; nitrification_rate = 5.8e-7)
+
+A nitrogen component for the `nitrogen` slot of [`Nutrients`](@ref) that resolves nitrate (`NO₃`) and
+ammonia (`NH₄`) as separate tracers, with ammonia converted to nitrate by nitrification. Plankton may
+then take up nitrate and ammonia independently and preferentially.
+
+Keyword Arguments
+=================
+
+- `nitrification_rate`: the rate at which ammonia is nitrified to nitrate (1/s)
+"""
 @kwdef struct NitrateAmmonia{FT}
     nitrification_rate::FT = 5.8e-7 # 1/s
 end

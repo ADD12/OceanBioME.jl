@@ -150,7 +150,7 @@ nothing #hide
 
 ### Running a box model
 
-We can now drop `SimplePhytoplankton` into `NutrientsPlanktonDetritus` alongside a single nitrogen nutrient, and run a box model forced by a seasonal surface light with a prescribed PAR. Here we keep the default `InstantRemineralisation` detritus, which returns the dissolved and solid waste straight back to the nutrient pool — so the tracer set is just `(:N, :P)`:
+We can now drop `SimplePhytoplankton` into `NutrientsPlanktonDetritus` alongside a single nitrogen nutrient, and run a box model forced by a seasonal surface light with a prescribed PAR. Here we keep the default `InstantRemineralisationDetritus` detritus, which returns the dissolved and solid waste straight back to the nutrient pool — so the tracer set is just `(:N, :P)`:
 
 ```@example implementing
 @inline PAR⁰(t) = 100 * (1 - cos((t + 15days) * 2π / year)) * (1 / (1 + 0.2 * exp(-((mod(t, year) - 200days) / 50days)^2))) + 2

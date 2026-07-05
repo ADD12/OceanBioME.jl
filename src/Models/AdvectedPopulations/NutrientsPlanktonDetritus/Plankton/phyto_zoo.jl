@@ -1,5 +1,37 @@
 using Oceananigans.Fields: ZeroField
 
+"""
+    PhytoZoo([FT = Float64;] kwargs...)
+    PhytoZoo(grid; phytoplankton_sinking_speed = 0, zooplankton_sinking_speed = 0, open_bottom = true, kwargs...)
+
+A phytoplankton-and-zooplankton plankton component for the `plankton` slot of a
+[`NutrientsPlanktonDetritus`](@ref) model, as used by the [`LOBSTER`](@ref) and
+[`NPZD`](@ref) presets. It adds phytoplankton (`P`) and zooplankton (`Z`) tracers (plus a
+temperature tracer `T` when a `temperature_coefficient` is supplied). Phytoplankton grow with light-
+and nutrient-limited uptake, are grazed by zooplankton, and both pools produce dissolved/solid waste.
+
+Use the `grid` method when the plankton should sink; it configures the sinking-velocity fields from
+`phytoplankton_sinking_speed`/`zooplankton_sinking_speed` and forwards the rest to the base
+constructor.
+
+Keyword Arguments
+=================
+
+- `nutrient_half_saturations`: a `NamedTuple` of half-saturation constants keyed by limiting nutrient
+  (e.g. `nitrate`, `ammonia`, `iron`); its keys set which nutrients limit growth
+- `light_limitation`: the light-limitation functional form (`MondoLightLimitation()` or
+  `AnalyticalLightLimitation()`), with `light_half_saturation` (W/m²)
+- `phytoplankton_maximum_growth_rate`, `phytoplankton_exudation_fraction`,
+  `phytoplankton_mortality_rate`, `phytoplankton_solid_waste_fraction`: phytoplankton growth and loss
+  parameters
+- `maximum_grazing_rate`, `grazing_half_saturation`, `preference_for_phytoplankton`,
+  `zooplankton_assimilation_fraction`, `zooplankton_mortality_rate`, `zooplankton_excretion_rate`:
+  zooplankton grazing and loss parameters
+- `temperature_coefficient`: optional Q₁₀ temperature dependence (off by default; adds a `T` tracer)
+- `carbon_ratio`, `iron_ratio`, `phosphate_ratio`, `rain_ratio`, `chlorophyll_ratio`: elemental and
+  chlorophyll ratios relative to nitrogen
+- see the constructor definition for the full list of tunable parameters and their default values/units
+"""
 struct PhytoZoo{LN, EN, TT, FT, LL, TC, PS, ZS} <: AbstractPlankton{LN}
           nutrient_half_saturations :: NamedTuple{LN, TT}
 
@@ -343,7 +375,7 @@ end
 end
 
 # assumptions about particle edibility
-@inline edible_particulate_organic_matter(i, j, k, grid, ::InstantRemineralisation, plankton::PhytoZoo, bgc::NPD{FT}, fields) where FT = 
+@inline edible_particulate_organic_matter(i, j, k, grid, ::InstantRemineralisationDetritus, plankton::PhytoZoo, bgc::NPD{FT}, fields) where FT = 
     zero(FT)
     
 @inline edible_particulate_organic_matter(i, j, k, grid, ::Detritus, plankton::PhytoZoo, bgc, fields) = 

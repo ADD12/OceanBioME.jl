@@ -1,6 +1,6 @@
 module DetritusModels
 
-export Detritus, DissolvedParticulate, InstantRemineralisation, CarbonNitrogenDissolvedParticulate
+export Detritus, DissolvedParticulate, InstantRemineralisationDetritus, CarbonNitrogenDissolvedParticulate
 
 using Adapt
 using Oceananigans.Grids: AbstractGrid

@@ -14,7 +14,7 @@ export NPZD, LOBSTER, ImplicitBiology, PISCES, DepthDependantSinkingSpeed, Presc
 export Nutrients, NitrateAmmonia
 export CarbonateSystem
 export Abiotic, ImplicitProductivity, PhytoZoo
-export Detritus, DissolvedParticulate, InstantRemineralisation, CarbonNitrogenDissolvedParticulate
+export Detritus, DissolvedParticulate, InstantRemineralisationDetritus, CarbonNitrogenDissolvedParticulate
 export Oxygen
 
 export SugarKelp, SugarKelpParticles, GiantKelp

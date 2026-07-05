@@ -9,6 +9,29 @@ using ..NutrientsPlanktonDetritusModels:
 import ..NutrientsPlanktonDetritusModels.InorganicCarbonModels: 
     inorganic_carbon_waste
 
+"""
+    CarbonNitrogenDissolvedParticulate(grid; kwargs...)
+
+A variable-Redfield detritus component for the `detritus` slot of a
+[`NutrientsPlanktonDetritus`](@ref) model that tracks carbon and nitrogen separately in dissolved,
+small-particulate, and large-particulate classes. It adds the tracers `DON`, `DOC`, `sPON`, `sPOC`,
+`bPON`, and `bPOC`; the two particulate classes sink, and each pool remineralises to inorganic
+nutrients and carbon (partly via the dissolved pool).
+
+Keyword Arguments
+=================
+
+- `grid`: (required) the geometry, needed to configure the sinking-speed fields
+- `dissolved_remineralisation_rate`, `small_particle_remineralisation_rate`,
+  `large_particle_remineralisation_rate`: per-class remineralisation rates (1/s)
+- `small_fraction_of_solid_waste`: the fraction of solid plankton waste routed to the small
+  particulate class (the rest goes to the large class)
+- `small_particle_remineralisation_dissolved_fraction`,
+  `large_particle_remineralisation_dissolved_fraction`: the fraction of each particulate class's
+  remineralisation that passes through the dissolved pool
+- `sinking_speeds`: a `NamedTuple` `(sPO = …, bPO = …)` of the small/large particle sinking speeds (m/s)
+- `open_bottom`: whether particulate detritus can sink out of the bottom of the domain
+"""
 struct CarbonNitrogenDissolvedParticulate{FT, SV}
                        dissolved_remineralisation_rate :: FT
                   small_particle_remineralisation_rate :: FT

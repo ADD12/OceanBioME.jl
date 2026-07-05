@@ -1,7 +1,7 @@
 include("dependencies_for_runtests.jl")
 
 using OceanBioME: conserved_tracers
-using OceanBioME.Models.NutrientsPlanktonDetritusModels: InstantRemineralisation, 
+using OceanBioME.Models.NutrientsPlanktonDetritusModels: InstantRemineralisationDetritus, 
                                                          CarbonNitrogenDissolvedParticulate
 using Oceananigans, CUDA, Random
 
@@ -80,7 +80,7 @@ nutrients_options = (Nutrients(; nitrogen = OceanBioME.N),
                      Nutrients(; nitrogen = OceanBioME.N, phosphate = OceanBioME.PO₄, iron = OceanBioME.Fe),
                      Nutrients(; nitrogen = NitrateAmmonia(), phosphate = OceanBioME.PO₄, iron = OceanBioME.Fe))
 
-detritus_options = (InstantRemineralisation(),
+detritus_options = (InstantRemineralisationDetritus(),
                     Detritus(grid), 
                     DissolvedParticulate(grid, :DOP, :POP), 
                     DissolvedParticulate(grid),
@@ -156,7 +156,7 @@ oxygen_options = (nothing,
 
         check_conservations(model)
 
-        if !((detritus isa InstantRemineralisation)&(plankton == ImplicitProductivity))
+        if !((detritus isa InstantRemineralisationDetritus)&(plankton == ImplicitProductivity))
             check_stepped(model)
         end
     end

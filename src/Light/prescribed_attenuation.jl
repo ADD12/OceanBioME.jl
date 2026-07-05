@@ -37,6 +37,39 @@ function PrescribedAttenuationPhotosyntheticallyActiveRadiation(grid, surface_PA
                                                                   field)
 end
 
+"""
+    PrescribedAttenuationPAR(grid, surface_PAR;
+                             attenuation = 0.1,
+                             attenuation_parameters = nothing,
+                             attenuation_discrete_form = false,
+                             surface_parameters = nothing,
+                             surface_discrete_form = false)
+
+Construct a light attenuation model (aliased `PrescribedAttenuationPAR`) which integrates a
+*prescribed* attenuation coefficient downward from the surface to give the photosynthetically active
+radiation (`PAR`), rather than computing attenuation from the chlorophyll concentration. It is the
+default light model for [`ImplicitBiology`](@ref) and is useful when no chlorophyll-based feedback on
+light is desired.
+
+At depth ``z`` the PAR is ``\\mathrm{PAR}(z) = \\mathrm{PAR}_0 \\exp\\left(-\\int_z^0 k \\, dz'\\right)``
+where ``k`` is the attenuation coefficient.
+
+Arguments
+=========
+
+- `grid`: the geometry to build the `PAR` field on
+- `surface_PAR`: the photosynthetically active radiation at the surface; a number, or a function of
+  the form `f(x, y, t)` (or the "discrete form" when `surface_discrete_form = true`)
+
+Keyword Arguments
+=================
+
+- `attenuation`: the attenuation coefficient ``k`` (1/m); a number, or a function evaluated per cell
+- `attenuation_parameters`, `attenuation_discrete_form`: parameters and form for `attenuation` when it
+  is a function
+- `surface_parameters`, `surface_discrete_form`: parameters and form for `surface_PAR` when it is a
+  function
+"""
 const PrescribedAttenuationPAR = PrescribedAttenuationPhotosyntheticallyActiveRadiation
 
 function update_biogeochemical_state!(model, PAR::PrescribedAttenuationPAR)

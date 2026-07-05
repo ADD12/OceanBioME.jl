@@ -2,6 +2,21 @@ using Oceananigans.Units
 using Oceananigans.Fields: ZeroField, ConstantField
 
 # Kuhn 2015 "detritus"
+"""
+    Detritus(grid; sinking_speed = 2.7489/day, open_bottom = true, remineralisation_rate = 0.1213/day)
+
+A single-class detritus component (after Kuhn et al., 2015) for the `detritus` slot of a
+[`NutrientsPlanktonDetritus`](@ref) model. It adds one sinking detritus tracer `D` which accumulates
+plankton waste and grazing residue and is remineralised back to the nutrient pool.
+
+Keyword Arguments
+=================
+
+- `grid`: (required) the geometry, needed to configure the sinking-speed field
+- `sinking_speed`: the downward sinking speed of detritus (m/s)
+- `open_bottom`: whether detritus can sink out of the bottom of the domain
+- `remineralisation_rate`: the rate at which detritus is remineralised to inorganic nutrients (1/s)
+"""
 struct Detritus{FT, SS}
       remineralisation_rate :: FT
              sinking_speeds :: SS

@@ -45,7 +45,7 @@ group_element_tracers(::NitrateAmmonia, ::NPD{FT}, val_element) where FT =
 
 group_element_tracers(::Abiotic, args...) = NamedTuple()
 group_element_tracers(::ImplicitProductivity, args...) = NamedTuple()
-group_element_tracers(::InstantRemineralisation, args...) = NamedTuple()
+group_element_tracers(::InstantRemineralisationDetritus, args...) = NamedTuple()
 group_element_tracers(::Nothing, args...) = NamedTuple()
 
 for thing in (PhytoZoo, Detritus, DissolvedParticulate)

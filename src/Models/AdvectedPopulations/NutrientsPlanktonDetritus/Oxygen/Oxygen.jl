@@ -30,17 +30,25 @@ import ..NutrientsPlanktonDetritusModels:
     nitrogen_ratio
 
 """
-    Oxygen
+    Oxygen([FT = Float64;]
+           production_oxygen_carbon_ratio = 131/122,
+           nitrification_oxygen_carbon_ratio = 31/122)
 
-`Oxygen` defines the evolution of oxygen (`O₂`) concentration for the
-`LOBSTER` biogeochemical model. 
+An optional oxygen component for the `oxygen` slot of any [`NutrientsPlanktonDetritus`](@ref) model
+(including the [`LOBSTER`](@ref), [`NPZD`](@ref), and [`ImplicitBiology`](@ref)
+presets). It adds one tracer, oxygen (`O₂`), which is produced by photosynthesis and consumed by
+remineralisation of organic waste and by nitrification.
 
-Oxygen is produced by photosynthesis in phytoplankton, and removed by nitrate 
-production and oxidation of ammonia.
+Oxygen concentration is only one-way coupled to the rest of the biogeochemistry and *does not* affect
+any other groups (e.g. low oxygen does *not* reduce zooplankton growth). To capture such an effect a
+different `plankton` component would be needed.
 
-Oxygen concentration is only one way coupled with the rest of the biogeochemistry
-and *does not* effect any other groups (e.g. low oxygen does *not* reduce
-zooplankton growth). To capture this effect a different `plankton` could be defined.
+Keyword Arguments
+=================
+
+- `production_oxygen_carbon_ratio`: moles of O₂ produced per mole of carbon fixed (mol O₂ / mol C)
+- `nitrification_oxygen_carbon_ratio`: moles of O₂ consumed per mole of carbon during nitrification
+  (mol O₂ / mol C)
 """
 struct Oxygen{FT}
        production_oxygen_carbon_ratio :: FT

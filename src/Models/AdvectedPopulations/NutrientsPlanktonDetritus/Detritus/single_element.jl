@@ -1,3 +1,27 @@
+"""
+    DissolvedParticulate(grid, dissolved_names = :DOM, particulate_names = (:sPOM, :bPOM); kwargs...)
+
+A single-element detritus component for the `detritus` slot of a [`NutrientsPlanktonDetritus`](@ref)
+model that splits organic matter into any number of dissolved classes (which do not sink) and
+particulate classes (which sink). The tracers added are the `dissolved_names` and `particulate_names`
+(e.g. the default `DOM`, `sPOM`, `bPOM`). Plankton dissolved/solid waste is partitioned between the
+classes, particulate matter sinks and remineralises, and a fraction of particulate remineralisation
+may be routed through the dissolved pool.
+
+Keyword Arguments
+=================
+
+- `grid`: (required) the geometry, needed to configure the sinking-speed fields
+- `dissolved_names`, `particulate_names`: the tracer name(s) of each dissolved / particulate class
+- `dissolved_remineralisation_rate`, `particulate_remineralisation_rate`: per-class remineralisation
+  rates (1/s)
+- `dissolved_waste_partitioning`, `particulate_waste_partitioning`: how dissolved / solid plankton
+  waste is split across the classes (each sums to 1)
+- `dissolved_fraction_of_remineralisation`: the fraction of each particulate class's remineralisation
+  that passes through the dissolved pool rather than directly to inorganic nutrients
+- `sinking_speeds`: the downward sinking speed of each particulate class (m/s)
+- `open_bottom`: whether particulate detritus can sink out of the bottom of the domain
+"""
 struct DissolvedParticulate{N, M, DN, PN, FN, FM, SV}
          dissolved_remineralisation_rate :: FN
        particulate_remineralisation_rate :: FM
