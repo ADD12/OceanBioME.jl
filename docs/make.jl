@@ -112,7 +112,6 @@ pages = [
     "Model components and setup" => component_pages,
     "Implementing new models" => "model_implementation.md",
     "Numerical implementation" => numerical_pages,
-    "Visualization" => "visualization.md",
     "Contibutors guide" => "contributing.md",
     "References" => "references.md",
     "Appendix" => appendix_pages
