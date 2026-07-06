@@ -55,8 +55,7 @@ vertical_diffusivity = VerticalScalarDiffusivity(ν = νᵥ, κ = κᵥ)
 # Setup the biogeochemical model with optional carbonate chemistry turned on.
 
 biogeochemistry = LOBSTER(grid;
-                          carbonate_system = CarbonateSystem(),
-                          detritus = TwoParticleAndDissolved(grid; open_bottom = true),
+                          inorganic_carbon = CarbonateSystem(),
                           scale_negatives = true)
 
 DIC_bcs = FieldBoundaryConditions(top = CarbonDioxideGasExchangeBoundaryCondition())
