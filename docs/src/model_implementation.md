@@ -274,8 +274,9 @@ The surface bloom sinks through the column, drawing the nutrient down near the s
 To run on a GPU you must tell Julia how to transfer your struct to the device. Add this after your struct definition (note the `sinking_velocity` field is adapted too):
 
 ```@example implementing
-import Adapt: adapt_structure
+using Pkg; Pkg.add("Adapt")
 using Adapt
+import Adapt: adapt_structure
 
 Adapt.adapt_structure(to, p::SimplePhytoplankton) =
     SimplePhytoplankton(adapt(to, p.maximum_growth_rate),
