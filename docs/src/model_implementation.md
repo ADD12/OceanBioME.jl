@@ -271,7 +271,11 @@ The surface bloom sinks through the column, drawing the nutrient down near the s
 
 ## GPU support
 
-To run on a GPU you must tell Julia how to transfer your struct to the device. Add this after your struct definition (note the `sinking_velocity` field is adapted too):
+When you run a model on a GPU, Oceananigans copies the model state including the model grids, fields, and biogeochemistry parameters, from CPU memory to GPU memory. When we create a custom plankton struct like  `SimplePhytoplankton`, we need to 'teach' Julia how to transfer each of the fields from CPU to GPU.
+
+The [Adapt.jl](https://github.com/JuliaGPU/Adapt.jl) package provides a mechanism to make this easy. The function `adapt(to, x)` takes `x` and returns a GPU-compatible copy on the device `to` (for example, a `CuArray` instead of an `Array`). For a custom struct, you define `Adapt.adapt_structure(to, p::SimplePhytoplankton)` to rebuild the struct field by field, calling `adapt(to, ...)` on each one. Scalar parameters (the growth rates, half-saturations, and so on) pass through unchanged, but fields like `sinking_velocity` must be adapted because they hold grid data that needs to live on the GPU.
+
+For this example, add the following after your struct definition:
 
 ```@example implementing
 using Pkg; Pkg.add("Adapt")
